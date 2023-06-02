@@ -24,6 +24,8 @@ class PdfDesigner
     const PLAYFUL = 'playful';
     const CUSTOM = 'custom';
     const CALM = 'calm';
+    const PERLE_CONSEIL = 'perlr_conseil';
+
     
     const DELIVERY_NOTE = 'delivery_note';
     const STATEMENT = 'statement';

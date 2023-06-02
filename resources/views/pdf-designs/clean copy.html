@@ -1,7 +1,7 @@
 <style>
     @import url('https://fonts.cdnfonts.com/css/century-gothic');
 </style>
-
+                                                
 <!-- <style id="style">
     @import url($font_url);
 
@@ -426,7 +426,7 @@
     /** To find out selectors on your own: https://invoiceninja.github.io/docs/custom-fields/#snippets **/
 </style>
  -->
-<style id="style">
+ <style id="style">
     @import url($font_url);
 
     :root {
@@ -438,23 +438,21 @@
     body {
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
-        font-family: $font_name, Helvetica, sans-serif;
+        font-family: 'Century Gothic', sans-serif;
         font-size: $font_size !important;
         zoom: 80%;
     }
 
 
-    table tr td,
-    table tr,
-    th {
+    table tr td, table tr, th {
         font-size: $font_size !important;
     }
-
+    
     html {
         margin: 0;
         padding-top: 1rem;
         padding-left: 4rem;
-        padding-right: 4rem;
+	    padding-right: 4rem; 
     }
 
     @page {
@@ -467,81 +465,102 @@
         padding: 0;
     }
 
-    .header-container {
+    .header-wrapper {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        margin-top: 2rem;
         gap: 20px;
+        grid-template-columns: 2fr 1fr 1fr;
+        grid-template-areas: "a b c";
+        grid-auto-columns: minmax(0, 5fr);
+        grid-auto-flow: column;
+        justify-content: left;
     }
 
-    .company-logo-container {
-        display: inline-block;
+    .header-wrapper2 {
+        display: grid;
+        margin-top: 2rem;
+        gap: 20px;
+        grid-template-columns: 2fr 2fr auto;
+        grid-template-areas: "a b c";
+        grid-auto-columns: minmax(0, 5fr);
+        grid-auto-flow: column;
+        justify-content: left;
     }
-
+    
     .company-logo {
+    /*max-width: 65%;*/
         max-width: $company_logo_size;
     }
 
-    #company-details {
+    .logo-container {
         display: flex;
         flex-direction: column;
-        line-height: var(--line-height);
     }
 
-    #company-details>p:first-child {
-        color: var(--primary-color);
-    }
-
-    #company-address {
+    .company-container {
         display: flex;
         flex-direction: column;
-        line-height: var(--line-height);
     }
-
-    .entity-label {
-        margin-top: 2.5rem;
-        text-transform: uppercase;
-        padding-left: 1rem;
-        margin-bottom: 1rem;
-        font-weight: bold;
-        color: var(--primary-color);
-    }
-
     .client-and-entity-wrapper {
-        /*        display: flex;*/
-        padding: 1rem;
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        /*       border-top: 1px solid #d8d8d8;
-        border-bottom: 1px solid #d8d8d8; */
-
-    }
-
-    #entity-details {
         display: flex;
+        padding: 1rem;
+        border-top: 1px solid #d8d8d8;
+        border-bottom: 1px solid #d8d8d8;
+    }
+
+    .header-wrapper #company-address {
+        display: flex;
+        flex-direction: column;
+        line-height: var(--line-height);
+    }
+
+    .header-wrapper #company-details {
+        display: flex;
+        flex-direction: column;
+        line-height: var(--line-height);
+    }
+
+    .header-wrapper #entity-details {
+        padding-right: 0.5rem;
         text-align: left;
-        margin-right: 20px;
-        line-height: var(--line-height) !important;
+        line-height: var(--line-height);
+        width: 100%;
     }
 
-    #entity-details>tr,
-    #entity-details th {
+    .header-wrapper #entity-details > tr,
+    .header-wrapper #entity-details th {
         font-weight: normal;
-        padding-right: 15px;
-        line-height: var(--line-height) !important;
+        white-space: nowrap;
+    }
+	
+    .header-wrapper
+    #entity-details
+    [data-element='entity-balance-due-label'],
+    .header-wrapper
+    #entity-details
+    [data-element='entity-balance-due'] {
+        background-color: #e6e6e6;
     }
 
+	#entity-details {
+        text-align: left;
+        width: 100%;
+	}
+	
+	#entity-details th {
+        font-weight:normal;
+        line-height: 1.5rem;
+        padding-right: 2rem;
+	}
+	
     #client-details {
         display: flex;
         flex-direction: column;
         line-height: var(--line-height);
     }
 
-    #client-details> :first-child {
-        font-weight: bold;
-    }
-
     #shipping-details {
-        display: $show_shipping_address;
+        visibility: $show_shipping_address_visibility;
         flex-direction: column;
         line-height: var(--line-height);
     }
@@ -559,54 +578,81 @@
         color: grey;
     }
 
-    [data-ref="table"]>thead {
+    [data-ref="table"] > thead {
         text-align: left;
     }
 
-    [data-ref="table"]>thead>tr>th {
+    [data-ref="table"] > thead > tr > th {
         padding: 1rem;
-        /*background-color: #f5f5f5;*/
+        background-color: #f5f5f5;
     }
 
-    [data-ref="table"]>thead>tr>th:last-child {
+    [data-ref="table"] > thead > tr > th:last-child {
         text-align: right;
     }
 
-    [data-ref="table"]>tbody>tr>td {
-        /*border-bottom: 1px solid #e6e6e6;*/
+    [data-ref="table"] > tbody > tr > td {
+        border-bottom: 1px solid #e6e6e6;
         padding: 0.75rem;
     }
 
-    [data-ref="table"]>tbody>tr>td:last-child {
+    [data-ref="table"] > tbody > tr > td:last-child {
         text-align: right;
     }
 
-    /*     [data-ref="table"] > tbody > tr:nth-child(even) {
+    [data-ref="table"] > tbody > tr:nth-child(even) {
         background-color: #f5f5f5;
-    } */
-
-    #table-totals>  thead > tr > th {
-        background-color: #ffffff;
-        font-size: 1.1rem;
-        padding-bottom: 1.5rem;
-        padding-top: 1.5rem;
-        padding-left: 1rem;
-        border: 0.5px solid #000000;
-        color: #000000;
-        
     }
-    #table-totals> thead > tr > th:last-child {
-        background-color: #6D147F;
-        color:#ffffff
-    }
-    #table-totals> tbody > tr > td {
-        border: 0.25px solid #000000;
-        padding: 1rem 1rem;
-    }
+    
     #table-totals {
-        width: 500px; /* Set the desired width for the table container */
-        float: right; /* Float the container to the right */
+        margin-top: 0.5rem;
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        padding-top: .5rem;
+        gap: 80px;
+        page-break-inside:auto;
+        overflow: visible !important;
+        font-weight: bold;
+        line-height: var(--line-height);
+
     }
+
+    #table-totals .totals-table-right-side>* {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    #table-totals>.totals-table-right-side>*> :nth-child(1) {
+        text-align: left;
+        margin-top: .25rem;
+        padding-left: 7px;
+    }
+
+    #table-totals>.totals-table-right-side> * > :not([hidden]) ~ :not([hidden]) {
+        --tw-space-y-reverse: 0;
+        margin-top: calc(.25rem * calc(1 - var(--tw-space-y-reverse)));
+        margin-bottom: calc(.25rem * var(--tw-space-y-reverse));
+    }
+
+    #table-totals>.totals-table-right-side>*> :nth-child(2) {
+        text-align: right;
+        padding-right: 0px;
+    }
+	
+    #table-totals
+    > *
+    [data-element='total-table-balance-due-label'],
+    #table-totals
+    > *
+    [data-element='total-table-balance-due'] {
+        font-weight: bold;
+    }
+
+    #table-totals > * > :last-child {
+        text-align: right;
+        padding-right: 1rem;
+    }
+
     [data-ref="total_table-footer"] {
         padding-left: 1rem;
         padding-right: 1rem;
@@ -662,28 +708,31 @@
         top: 0;
     }
 
+    #footer {
+        position: fixed;
+        bottom: 0;
+        border-top: 1px solid #000;
+        width: 82%;
+        min-height:100px;
+        padding-top: 0.5rem;
+        margin-top: 40px;
+    }
 
-    [data-element='product_table-product.description-td'],
-    td {
-        min-width: 100%;
+    [data-element='product_table-product.description-td'], td {
+        min-width:100%;
         max-width: 300px;
-        overflow-wrap: break-word;
+        overflow-wrap: break-word; 
     }
 
-    [data-ref="total_table-public_notes"] {
-        font-weight: normal;
-    }
-
-    [data-ref="total_table-terms"] {
-        font-weight: normal;
-    }
+    [data-ref="total_table-public_notes"] { font-weight: normal; } 
+    [data-ref="total_table-terms"] { font-weight: normal; } 
 
     /* [data-ref="shipping_address-label"] {
         display: none;
     } */
 
     .stamp {
-        transform: rotate(12deg);
+      transform: rotate(12deg);
         color: #555;
         font-size: 3rem;
         font-weight: 700;
@@ -694,24 +743,24 @@
         border-radius: 1rem;
         font-family: 'Courier';
         mix-blend-mode: multiply;
-        z-index: 200 !important;
-        position: fixed;
+        z-index:200 !important;
+        position:  fixed;
         text-align: center;
     }
 
     .is-paid {
-        color: #D23;
-        border: 1rem double #D23;
+        color:  #D23;
+        border: 1rem double  #D23;
         transform: rotate(-5deg);
         font-size: 6rem;
         font-family: "Open sans", Helvetica, Arial, sans-serif;
         border-radius: 0;
         padding: 0.5rem;
         opacity: 0.2;
-        z-index: 200 !important;
-        position: fixed;
+        z-index:200 !important;
+        position:  fixed;
         display: $show_paid_stamp;
-    }
+    } 
 
     .project-header {
         font-size: 1.2em;
@@ -722,118 +771,12 @@
         margin-right: 0;
         font-weight: bold;
         color: #505050;
+    } 
+    
+    .pqrcode {
+        
     }
-
-    .pqrcode {}
-
-
-
-    [data-ref="table"] {
-        margin-top: 1rem;
-        margin-bottom: 5px;
-        min-width: 100%;
-        table-layout: fixed;
-        overflow-wrap: break-word;
-    }
-
-
-
-    [data-ref="table"]>thead {
-        text-align: left;
-    }
-
-    [data-ref="table"]>thead>tr>th {
-        font-size: 1.1rem;
-        padding-bottom: 1.5rem;
-        padding-top: 1.5rem;
-        padding-left: 1rem;
-        border: 0.5px solid #000000;
-        color: #FFF;
-    }
-
-    .product-table>tbody>tr>td {
-        border: 0.25px solid #000000;
-        padding: 1rem 1rem;
-    }
-
-    [data-element='product_table-product.description-td'],
-    td {
-        min-width: 100%;
-        max-width: 300px;
-        overflow-wrap: break-word;
-    }
-
-    .product-table>tbody>tr>td:first-child {
-        color: var(--primary-color);
-
-    }
-
-    .product-table>thead>tr>th:last-child,
-    .product-table>tbody>tr>td:last-child {
-        text-align: right;
-    }
-
-    .product-table>thead>tr>th:first-child {
-        background-color: #18D6CD;
-    }
-
-    .product-table>thead>tr>th {
-        background-color: #6D147F;
-
-    }
-
-    .product-table>thead>tr>th:last-child {
-        padding-right: 1rem;
-    }
-
-    .product-table>tbody>tr:nth-child(odd) {
-        /*         background-color: #f5f5f5;*/
-    }
-
-    #table-totals>thead>tr>th {
-        background-color: #ffffff;
-        font-size: 1.1rem;
-        padding-bottom: 1.5rem;
-        padding-top: 1.5rem;
-        padding-left: 1rem;
-        border: 0.5px solid #000000;
-        color: #000000;
-    }
-
-    #table-totals>thead>tr>th:last-child {
-        background-color: #6D147F;
-        color: #ffffff
-    }
-
-    #table-totals>tbody>tr>td {
-        border: 0.25px solid #000000;
-        padding: 1rem 1rem;
-    }
-
-    #table-totals {
-        width: 500px;
-        /* Set the desired width for the table container */
-        float: right;
-        /* Float the container to the right */
-    }
-
-    [data-ref="table"] {
-        margin-top: 2rem;
-        min-width: 100%;
-        table-layout: fixed;
-        overflow-wrap: break-word;
-    }
-
-
-    #footer {
-        position: fixed;
-        bottom: 20px;
-        width: 82%;
-        min-height: 100px;
-        padding-top: 0.5rem;
-        margin-top: 40px;
-    }
-
+    
     /** Useful snippets, uncomment to enable. **/
 
     /** Hide company logo **/
@@ -864,137 +807,195 @@
 
 
 <div id="body">
-    <table style="min-width: 100% ;page-break-inside: avoid;">
+    <table  style="min-width: 100% ;page-break-inside: avoid;">
         <thead>
-            <tr>
-                <td>
-                    <div class="repeating-header-space">&nbsp;</div>
-                </td>
-            </tr>
+           <tr>
+              <td>
+                 <div class="repeating-header-space">&nbsp;</div>
+              </td>
+           </tr>
         </thead>
-        <tbody>
-            <tr>
-                <td>
-                    <div id="body">
-                        <div style="margin-bottom: 50px;" class="header-container">
-                            <div class="company-logo-container">
-                                <img class="company-logo" src="$company.logo" alt="$company.name logo">
-                            </div>
-                            <div id="company-details"></div>
-                            <div id="company-address"></div>
-                        </div>
-                        <!--                <p class="entity-label">$entity_label</p>
-      -->
-                        <div class="client-and-entity-wrapper">
-                            <div >
-                                <table id="entity-details" cellspacing="0" cellpadding="0" dir="$dir"></table>
-                            </div>
-                            
-                            <table style="padding-left: 180px;" id="client-details"></table>
-                            <table style="padding-left: 180px;" id="vendor-details"></table>
-                            <div style="margin-left: 180px;" id="shipping-details"></div>
-                        </div>
-                        <table id="product-table" class="product-table" cellspacing="0" data-ref="table"></table>
-                        <table id="task-table" cellspacing="0" data-ref="table"></table>
-                        <table id="delivery-note-table" cellspacing="0" data-ref="table"></table>
-                        <table id="statement-invoice-table" cellspacing="0" data-ref="table"></table>
-                        <div id="statement-invoice-table-totals" data-ref="statement-totals"></div>
-                        <table id="statement-payment-table" cellspacing="0" data-ref="table"></table>
-                        <div id="statement-payment-table-totals" data-ref="statement-totals"></div>
-                        <table id="statement-credit-table" cellspacing="0" data-ref="table"></table>
-                        <div id="statement-credit-table-totals" data-ref="statement-totals"></div>
-                        <table id="statement-aging-table" cellspacing="0" data-ref="table"></table>
-                        <div id="statement-aging-table-totals" cellspacing="0" data-ref="statement-totals"></div>
-                        <table id="table-totals" style="margin-top: 10px; margin-bottom: 10px;" cellspacing="0">
-                            $status_logo
-                        </table>
+        <tbody >
+           <tr>
+              <td>
+                 <div id="body">
+                    <div style="margin-bottom: 50px;" class="header-container">
+                       <div class="company-logo-container">
+                          <img class="company-logo" src="$company.logo" alt="$company.name logo">
+                       </div>
+                       <div id="company-details"></div>
+                       <div id="company-address"></div>
                     </div>
-                </td>
-            </tr>
+     <!--                <p class="entity-label">$entity_label</p>
+      -->            <div class="client-and-entity-wrapper">
+                       <div>
+                          <table id="entity-details" cellspacing="0" cellpadding="0" dir="$dir"></table>
+                       </div>
+                       <div style="margin-left: 200px;" id="client-details"></div>
+                       <div style="margin-left: 200px;" id="vendor-details"></div>
+                       <div style="margin-left: 200px;" id="shipping-details"></div>
+                    </div>
+
+                    <table id="product-table" class="product-table" cellspacing="0" data-ref="table"></table>
+     
+                    <table id="task-table" cellspacing="0" data-ref="table"></table>
+                    <table id="delivery-note-table" cellspacing="0" data-ref="table"></table>
+                    <table id="statement-invoice-table" cellspacing="0" data-ref="table"></table>
+                    <div id="statement-invoice-table-totals" data-ref="statement-totals"></div>
+                    <table id="statement-payment-table" cellspacing="0" data-ref="table"></table>
+                    <div id="statement-payment-table-totals" data-ref="statement-totals"></div>
+                     <table id="statement-credit-table" cellspacing="0" data-ref="table"></table>
+                     <div id="statement-credit-table-totals" data-ref="statement-totals"></div>
+                    <table id="statement-aging-table" cellspacing="0" data-ref="table"></table>
+                    <div id="statement-aging-table-totals"cellspacing="0" data-ref="statement-totals"></div>
+                    <table id="table-totals" style="margin-top: 50px; margin-bottom: 50px;" cellspacing="0">$status_logo</table>
+                 </div>
+              </td>
+           </tr>
         </tbody>
         <tfoot>
-            <tr>
-                <td>
-                    <div class="footer-spacer repeating-footer-space">&nbsp;
-                        <div class="repeating-footer" id="footer">
-                        </div>
-                </td>
-            </tr>
+           <tr>
+              <td>
+                 <div class="footer-spacer repeating-footer-space">&nbsp;
+                     <div class="repeating-footer" id="footer">
+                 </div>
+              </td>
+           </tr>
         </tfoot>
-    </table>
-
+     </table>
+     
 </div>
+    
 
 
 
 
 
 
+<!-- <div class="table-container">
+<table class="page-table" style="min-width: 100% ;page-break-inside: avoid;">
+   <thead>
+      <tr>
+         <td>
+            <div class="repeating-header-space">&nbsp;</div>
+         </td>
+      </tr>
+   </thead>
+   <tbody >
+      <tr>
+         <td>
+            <div id="body">
+               <div style="margin-bottom: 50px;" class="header-container">
+                  <div class="company-logo-container">
+                     <img class="company-logo" src="$company.logo" alt="$company.name logo">
+                  </div>
+                  <div id="company-details"></div>
+                  <div id="company-address"></div>
+               </div>
+                <p class="entity-label">$entity_label</p>
+             //<div class="client-and-entity-wrapper">
+                  <div>
+                     <table id="entity-details" cellspacing="0" cellpadding="0" dir="$dir"></table>
+                  </div>
+                  <div style="margin-left: 200px;" id="client-details"></div>
+                  <div style="margin-left: 200px;" id="vendor-details"></div>
+                  <div style="margin-left: 200px;" id="shipping-details"></div>
+               </div>
+               <table id="product-table" class="product-table" cellspacing="0" data-ref="table"></table>
 
+               <table id="task-table" cellspacing="0" data-ref="table"></table>
+               <table id="delivery-note-table" cellspacing="0" data-ref="table"></table>
+               <table id="statement-invoice-table" cellspacing="0" data-ref="table"></table>
+               <div id="statement-invoice-table-totals" data-ref="statement-totals"></div>
+               <table id="statement-payment-table" cellspacing="0" data-ref="table"></table>
+               <div id="statement-payment-table-totals" data-ref="statement-totals"></div>
+                <table id="statement-credit-table" cellspacing="0" data-ref="table"></table>
+                <div id="statement-credit-table-totals" data-ref="statement-totals"></div>
+               <table id="statement-aging-table" cellspacing="0" data-ref="table"></table>
+               <div id="statement-aging-table-totals"cellspacing="0" data-ref="statement-totals"></div>
+               <table id="table-totals" style="margin-top: 50px; margin-bottom: 50px;" cellspacing="0">$status_logo</table>
+            </div>
+         </td>
+      </tr>
+   </tbody>
+   <tfoot>
+      <tr>
+         <td>
+            <div class="footer-spacer repeating-footer-space">&nbsp;
+                <div class="repeating-footer" id="footer">
+            </div>
+         </td>
+      </tr>
+   </tfoot>
+</table>
+</div> -->
 
-<div class="repeating-header" id="header"></div>
-
+ <div class="repeating-header" id="header"></div>
+ 
 $entity_images
-
+<!-- 
 <div >
-    <p id="footer_1" data-ref="footer_1"></p>
+    <p id="footer_1" data-ref="footer_1" ></p>
 
     <p data-ref="total_table-footer">$entity_footer</p>
-    <p id="footer" style="font-size: smaller;text-align: center;border-top: 0.5px solid #000;">
-        Agence Conseil en Communication & Événementiel Adresse : 21, Avenue Oqba N°7 Agdal Rabat www.perleconseil.ma<br>
-        Tél : 05 37 68 20 79 / 08 08 50 52 95 - Fax : 05 37 68 20 74 – Email : aicha.farid@perleconseil.ma <br>
-        Société SARL – Patente N°:25765126 - RC N°:75743 – IF N°:3384538 – CNSS N°:8055388 – ICE N°:000048886000054 <br>
-        CB: Banque Populaire Rabat -Kenitra - Agence : OMAR IBN ELKHATTAB Compte N°: 1818102121196807910001 38
+    <footer id="footer" >
+        <p>
+            <hr style="background-color: black ;color: #000;">
+            Agence Conseil en Communication & Événementiel Adresse : 21, Avenue Oqba N°7 Agdal Rabat www.perleconseil.ma<br>
+Tél : 05 37 68 20 79 / 08 08 50 52 95 - Fax : 05 37 68 20 74 – Email : aicha.farid@perleconseil.ma <br>
+Société SARL – Patente N°:25765126 - RC N°:75743 – IF N°:3384538 – CNSS N°:8055388 – ICE N°:000048886000054 <br>
+CB: Banque Populaire Rabat -Kenitra - Agence : OMAR IBN ELKHATTAB Compte N°: 1818102121196807910001 38
 
-    </p>
-    <script>
-        // Clear up space a bit, if [product-table, tasks-table, delivery-note-table] isn't present.
-        document.addEventListener('DOMContentLoaded', () => {
-            let tables = [
-                'product-table', 'task-table', 'delivery-note-table',
-                'statement-invoice-table', 'statement-payment-table', 'statement-aging-table-totals',
-                'statement-invoice-table-totals', 'statement-payment-table-totals', 'statement-aging-table',
-                'client-details', 'vendor-details', 'swiss-qr', 'shipping-details', 'statement-credit-table', 'statement-credit-table-totals',
-            ];
+        </p>
+    </footer>
+        <script>
+            // Clear up space a bit, if [product-table, tasks-table, delivery-note-table] isn't present.
+            document.addEventListener('DOMContentLoaded', () => {
+                let tables = [
+                    'product-table', 'task-table', 'delivery-note-table',
+                    'statement-invoice-table', 'statement-payment-table', 'statement-aging-table-totals',
+                    'statement-invoice-table-totals', 'statement-payment-table-totals', 'statement-aging-table',
+                    'client-details','vendor-details', 'swiss-qr','shipping-details', 'statement-credit-table', 'statement-credit-table-totals',
+                ];
 
-            tables.forEach((tableIdentifier) => {
-                console.log(document.getElementById(tableIdentifier));
+                tables.forEach((tableIdentifier) => {
+                    console.log(document.getElementById(tableIdentifier));
 
-                document.getElementById(tableIdentifier)?.childElementCount === 0
-                    ? document.getElementById(tableIdentifier).style.setProperty('display', 'none', 'important')
-                    : '';
+                    document.getElementById(tableIdentifier)?.childElementCount === 0
+                        ? document.getElementById(tableIdentifier).style.setProperty('display', 'none', 'important')
+                        : '';
+                });
             });
-        });
-    </script>
-    <script>
-        let productTable = document.querySelector("#product-table tbody");
-        let productRows = productTable.querySelectorAll("tr");
+        </script>
+        <script>
+    let productTable = document.querySelector("#product-table tbody");
+    let productRows = productTable.querySelectorAll("tr");
 
-        // loop through each product row
-        productRows.forEach(function (row) {
-            let itemColumn = row.querySelector("td[data-ref='product_table-product.item-td']");
-            let descriptionColumn = row.querySelector("td[data-ref='product_table-product.description-td']");
+    // loop through each product row
+    productRows.forEach(function (row) {
+        let itemColumn = row.querySelector("td[data-ref='product_table-product.item-td']");
+        let descriptionColumn = row.querySelector("td[data-ref='product_table-product.description-td']");
 
-            // merge the content of item and description columns
-            itemColumn.innerHTML = "<b>" + itemColumn.innerHTML + "</b><br/>";
-            itemColumn.innerHTML += descriptionColumn.innerHTML;
-            //itemColumn.innerHTML = "<br><strong>" + itemColumn.innerHTML + "</strong>"+"<br>"+descriptionColumn.innerHTML;
+        // merge the content of item and description columns
+        itemColumn.innerHTML = "<b>"+itemColumn.innerHTML+"</b><br/>";
+        itemColumn.innerHTML +=  descriptionColumn.innerHTML ;
+        //itemColumn.innerHTML = "<br><strong>" + itemColumn.innerHTML + "</strong>"+"<br>"+descriptionColumn.innerHTML;
 
-            //"<br><b>" += itemColumn.innerHTML + "<b><br>" += descriptionColumn.innerHTML + "</b>";
-            // remove the description column
-            descriptionColumn.remove();
-        });
+        //"<br><b>" += itemColumn.innerHTML + "<b><br>" += descriptionColumn.innerHTML + "</b>";
+        // remove the description column
+        descriptionColumn.remove();
+    });
 
-        // hide the Description header
-        let descriptionHeader = document.querySelector("th[data-ref='product_table-product.description-th']");
-        descriptionHeader.style.display = "none";
-    </script>
+    // hide the Description header
+    let descriptionHeader = document.querySelector("th[data-ref='product_table-product.description-th']");
+    descriptionHeader.style.display = "none";
+</script>
 
 </div>
+ -->
 
 
-
-<!-- <div id="footer" style="">
+<div id="footer" style="">
     <div style="width: 100%;">
         <p data-ref="total_table-footer">$entity_footer</p>
         <script>
@@ -1018,4 +1019,3 @@ $entity_images
         </script>
     </div>
 </div>
- -->

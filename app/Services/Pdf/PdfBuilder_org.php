@@ -647,12 +647,6 @@ class PdfBuilder
             $data[$key][$table_type.'.notes'] = Helpers::processReservedKeywords($item->notes, $this->service->config->currency_entity, $currentDateTime);
             $data[$key][$table_type.'.description'] = Helpers::processReservedKeywords($item->notes, $this->service->config->currency_entity, $currentDateTime);
 
-            ////////
-
-            $data[$key][$table_type . '.item'] .= ' - ' . $data[$key][$table_type . '.description'];
-            //unset($data[$key][$table_type . '.description']);
-
-            //////////
             $data[$key][$table_type.".{$_table_type}1"] = strlen($item->custom_value1) >= 1 ? $helpers->formatCustomFieldValue($this->service->company->custom_fields, "{$_table_type}1", $item->custom_value1, $this->service->config->currency_entity) : '';
             $data[$key][$table_type.".{$_table_type}2"] = strlen($item->custom_value2) >= 1 ? $helpers->formatCustomFieldValue($this->service->company->custom_fields, "{$_table_type}2", $item->custom_value2, $this->service->config->currency_entity) : '';
             $data[$key][$table_type.".{$_table_type}3"] = strlen($item->custom_value3) >= 1 ? $helpers->formatCustomFieldValue($this->service->company->custom_fields, "{$_table_type}3", $item->custom_value3, $this->service->config->currency_entity) : '';
@@ -994,238 +988,25 @@ class PdfBuilder
      * @return array
      *
      */
-
-    public function buildTableTotalsHeader(): array
-    {
-        $elements = [];
-
-        //need to see where we don't pass all these particular variables. try and refactor thisout
-        $_variables = array_key_exists('variables', $this->service->options)
-            ? $this->service->options['variables']
-            : ['values' => ['$entity.public_notes' => '', '$entity.terms' => '', '$entity_footer' => ''], 'labels' => []];
-
-        $variables = $this->service->config->pdf_variables['total_columns'];
-
-        $elements = [
-            ['element' => 'div', 'properties' => ['style' => 'display: flex; flex-direction: column;'], 'elements' => [
-                ['element' => 'p', 'content' => '', 'properties' => ['style' => 'text-align: left; display: flex; flex-direction: column; page-break-inside: auto;'], 'elements' => []],
-                ['element' => 'div', 'properties' => ['style' => 'margin-top: 1.5rem; display: flex; align-items: flex-start; page-break-inside: auto;'], 'elements' => []],
-            ]],
-            ['element' => 'div', 'properties' => ['class' => 'totals-table-right-side', 'dir' => '$dir'], 'elements' => []],
-        ];
-
-
-        if ($this->service->document_type == PdfService::DELIVERY_NOTE) {
-            return $elements;
-        }
-
-        if ($this->service->config->entity instanceof Quote) {
-            // We don't want to show Balanace due on the quotes.
-            if (in_array('$outstanding', $variables)) {
-                $variables = \array_diff($variables, ['$outstanding']);
-            }
-
-            if ($this->service->config->entity->partial > 0) {
-                $variables[] = '$partial_due';
-            }
-        }
-
-        if ($this->service->config->entity instanceof Credit) {
-            // We don't want to show Balanace due on the quotes.
-            if (in_array('$paid_to_date', $variables)) {
-                $variables = \array_diff($variables, ['$paid_to_date']);
-            }
-        }
-
-        foreach (['discount'] as $property) {
-            $variable = sprintf('%s%s', '$', $property);
-
-            if (
-                !is_null($this->service->config->entity->{$property}) &&
-                !empty($this->service->config->entity->{$property}) &&
-                $this->service->config->entity->{$property} != 0
-            ) {
-                continue;
-            }
-
-            $variables = array_filter($variables, function ($m) use ($variable) {
-                return $m != $variable;
-            });
-        }
-
-        foreach ($variables as $variable) {
-            if ($variable == '$total_taxes') {
-                $taxes = $this->service->config->entity->total_tax_map;
-
-                if (!$taxes) {
-                    continue;
-                }
-
-                foreach ($taxes as $i => $tax) {
-                    $elements[] = ['element' => 'th', 'content', 'content' => $tax['name'], 'properties' => ['data-ref' => 'totals-table-total_tax_' . $i . '-label']]
-
-                        //['element' => 'td', 'content', 'content' => $this->service->config->formatMoney($tax['total']), 'properties' => ['data-ref' => 'totals-table-total_tax_' . $i]],
-                    ;
-                }
-            } elseif ($variable == '$line_taxes') {
-                $taxes = $this->service->config->entity->tax_map;
-
-                if (!$taxes) {
-                    continue;
-                }
-
-                foreach ($taxes as $i => $tax) {
-                    $elements[] = ['element' => 'th', 'content', 'content' => $tax['name'], 'properties' => ['data-ref' => 'totals-table-line_tax_' . $i . '-label']]
-                        //['element' => 'td', 'content', 'content' => $this->service->config->formatMoney($tax['total']), 'properties' => ['data-ref' => 'totals-table-line_tax_' . $i]],
-                    ;
-                }
-            } elseif (Str::startsWith($variable, '$custom_surcharge')) {
-                $_variable = ltrim($variable, '$'); // $custom_surcharge1 -> custom_surcharge1
-
-                $visible = intval($this->service->config->entity->{$_variable}) != 0;
-
-                $elements[] = ['element' => 'th', 'content' => $variable . '_label', 'properties' => ['hidden' => !$visible, 'data-ref' => 'totals_table-' . substr($variable, 1) . '-label']]
-                    //['element' => 'td', 'content' => $variable, 'properties' => ['hidden' => !$visible, 'data-ref' => 'totals_table-' . substr($variable, 1)]],
-                ;
-            } elseif (Str::startsWith($variable, '$custom')) {
-                $field = explode('_', $variable);
-                $visible = is_object($this->service->company->custom_fields) && property_exists($this->service->company->custom_fields, $field[1]) && !empty($this->service->company->custom_fields->{$field[1]});
-
-                $elements[] = ['element' => 'th', 'content' => $variable . '_label', 'properties' => ['hidden' => !$visible, 'data-ref' => 'totals_table-' . substr($variable, 1) . '-label']]
-                    //['element' => 'td', 'content' => $variable, 'properties' => ['hidden' => !$visible, 'data-ref' => 'totals_table-' . substr($variable, 1)]],
-                ;
-            } else {
-                $elements[] = ['element' => 'th', 'content' => $variable . '_label', 'properties' => ['data-ref' => 'totals_table-' . substr($variable, 1) . '-label']]
-                    //['element' => 'td', 'content' => $variable, 'properties' => ['data-ref' => 'totals_table-' . substr($variable, 1)]],
-                ;
-            }
-        }
-
-
-        return $elements;
-    }
-
-    public function buildTableTotalBody(): array
-    {
-        $elements = [];
-
-        //need to see where we don't pass all these particular variables. try and refactor thisout
-        $_variables = array_key_exists('variables', $this->service->options)
-            ? $this->service->options['variables']
-            : ['values' => ['$entity.public_notes' => '', '$entity.terms' => '', '$entity_footer' => ''], 'labels' => []];
-
-        $variables = $this->service->config->pdf_variables['total_columns'];
-
-        $elements = [
-            ['element' => 'div', 'properties' => ['style' => 'display: flex; flex-direction: column;'], 'elements' => [
-                ['element' => 'p', 'content' => '', 'properties' => ['style' => 'text-align: left; display: flex; flex-direction: column; page-break-inside: auto;'], 'elements' => []],
-                ['element' => 'div', 'properties' => ['style' => 'margin-top: 1.5rem; display: flex; align-items: flex-start; page-break-inside: auto;'], 'elements' => []],
-            ]],
-            ['element' => 'div', 'properties' => ['class' => 'totals-table-right-side', 'dir' => '$dir'], 'elements' => []],
-        ];
-
-
-        if ($this->service->document_type == PdfService::DELIVERY_NOTE) {
-            return $elements;
-        }
-
-        if ($this->service->config->entity instanceof Quote) {
-            // We don't want to show Balanace due on the quotes.
-            if (in_array('$outstanding', $variables)) {
-                $variables = \array_diff($variables, ['$outstanding']);
-            }
-
-            if ($this->service->config->entity->partial > 0) {
-                $variables[] = '$partial_due';
-            }
-        }
-
-        if ($this->service->config->entity instanceof Credit) {
-            // We don't want to show Balanace due on the quotes.
-            if (in_array('$paid_to_date', $variables)) {
-                $variables = \array_diff($variables, ['$paid_to_date']);
-            }
-        }
-
-        foreach (['discount'] as $property) {
-            $variable = sprintf('%s%s', '$', $property);
-
-            if (
-                !is_null($this->service->config->entity->{$property}) &&
-                !empty($this->service->config->entity->{$property}) &&
-                $this->service->config->entity->{$property} != 0
-            ) {
-                continue;
-            }
-
-            $variables = array_filter($variables, function ($m) use ($variable) {
-                return $m != $variable;
-            });
-        }
-
-
-        foreach ($variables as $variable) {
-
-            if ($variable == '$total_taxes') {
-                $taxes = $this->service->config->entity->total_tax_map;
-
-                if (!$taxes) {
-                    continue;
-                }
-
-                foreach ($taxes as $i => $tax) {
-
-                    $elements[] = ['element' => 'td', 'content', 'content' => $this->service->config->formatMoney($tax['total']), 'properties' => ['data-ref' => 'totals-table-total_tax_' . $i]];
-                }
-            } elseif ($variable == '$line_taxes') {
-                $taxes = $this->service->config->entity->tax_map;
-
-                if (!$taxes) {
-                    continue;
-                }
-
-                foreach ($taxes as $i => $tax) {
-                   // $element = ['element' => 'tr', 'elements' => []];
-
-                    $elements[] = ['element' => 'td', 'content', 'content' => $this->service->config->formatMoney($tax['total']), 'properties' => ['data-ref' => 'totals-table-line_tax_' . $i]];
-                }
-            } elseif (Str::startsWith($variable, '$custom_surcharge')) {
-
-                $_variable = ltrim($variable, '$'); // $custom_surcharge1 -> custom_surcharge1
-
-                $visible = intval($this->service->config->entity->{$_variable}) != 0;
-
-                $elements[] = ['element' => 'td', 'content' => $variable, 'properties' => ['hidden' => !$visible, 'data-ref' => 'totals_table-' . substr($variable, 1)]];
-            } elseif (Str::startsWith($variable, '$custom')) {
-
-                $field = explode('_', $variable);
-                $visible = is_object($this->service->company->custom_fields) && property_exists($this->service->company->custom_fields, $field[1]) && !empty($this->service->company->custom_fields->{$field[1]});
-
-                $elements[] = ['element' => 'td', 'content' => $variable, 'properties' => ['hidden' => !$visible, 'data-ref' => 'totals_table-' . substr($variable, 1)]];
-            } else {
-
-                $elements[] = ['element' => 'td', 'content' => $variable, 'properties' => ['data-ref' => 'totals_table-' . substr($variable, 1)]];
-            }
-            //$elements[] = $element;
-        }
-
-
-        return $elements;
-    }
     public function getTableTotals() :array
     {
         //need to see where we don't pass all these particular variables. try and refactor thisout
         $_variables = array_key_exists('variables', $this->service->options)
             ? $this->service->options['variables']
-            : ['values' => ['$entity.public_notes' => '', '$entity.terms' => '', '$entity_footer' => ''], 'labels' => []];
+            : ['values' => ['$entity.public_notes' => $this->service->config->entity->public_notes, '$entity.terms' => $this->service->config->entity->terms, '$entity_footer' => $this->service->config->entity->footer], 'labels' => []];
 
         $variables = $this->service->config->pdf_variables['total_columns'];
 
         $elements = [
             ['element' => 'div', 'properties' => ['style' => 'display: flex; flex-direction: column;'], 'elements' => [
+                ['element' => 'p', 'content' => strtr(str_replace(["labels","values"], ["",""], $_variables['values']['$entity.public_notes']), $_variables), 'properties' => ['data-ref' => 'total_table-public_notes', 'style' => 'text-align: left;']],
                 ['element' => 'p', 'content' => '', 'properties' => ['style' => 'text-align: left; display: flex; flex-direction: column; page-break-inside: auto;'], 'elements' => [
+                    ['element' => 'span', 'content' => '$entity.terms_label: ', 'properties' => ['hidden' => $this->entityVariableCheck('$entity.terms'), 'data-ref' => 'total_table-terms-label', 'style' => 'font-weight: bold; text-align: left; margin-top: 1rem;']],
+                    ['element' => 'span', 'content' => strtr(str_replace("labels", "", $_variables['values']['$entity.terms']), $_variables['labels']), 'properties' => ['data-ref' => 'total_table-terms', 'style' => 'text-align: left;']],
                 ]],
+                ['element' => 'img', 'properties' => ['style' => 'max-width: 50%; height: auto;', 'src' => '$contact.signature', 'id' => 'contact-signature']],
                 ['element' => 'div', 'properties' => ['style' => 'margin-top: 1.5rem; display: flex; align-items: flex-start; page-break-inside: auto;'], 'elements' => [
+                    ['element' => 'img', 'properties' => ['src' => '$invoiceninja.whitelabel', 'style' => 'height: 2.5rem;', 'hidden' => 'false', 'id' => 'invoiceninja-whitelabel-logo']],
                 ]],
             ]],
             ['element' => 'div', 'properties' => ['class' => 'totals-table-right-side', 'dir' => '$dir'], 'elements' => []],
@@ -1270,12 +1051,64 @@ class PdfBuilder
             });
         }
 
+        foreach ($variables as $variable) {
+            if ($variable == '$total_taxes') {
+                $taxes = $this->service->config->entity->total_tax_map;
 
+                if (!$taxes) {
+                    continue;
+                }
 
-        return [
-            ['element' => 'thead', 'elements' => $this->buildTableTotalsHeader()],
-            ['element' => 'tr', 'elements' => $this->buildTableTotalBody()],
-        ];
+                foreach ($taxes as $i => $tax) {
+                    $elements[1]['elements'][] = ['element' => 'div', 'elements' => [
+                        ['element' => 'span', 'content', 'content' => $tax['name'], 'properties' => ['data-ref' => 'totals-table-total_tax_' . $i . '-label']],
+                        ['element' => 'span', 'content', 'content' => $this->service->config->formatMoney($tax['total']), 'properties' => ['data-ref' => 'totals-table-total_tax_' . $i]],
+                    ]];
+                }
+            } elseif ($variable == '$line_taxes') {
+                $taxes = $this->service->config->entity->tax_map;
+
+                if (!$taxes) {
+                    continue;
+                }
+
+                foreach ($taxes as $i => $tax) {
+                    $elements[1]['elements'][] = ['element' => 'div', 'elements' => [
+                        ['element' => 'span', 'content', 'content' => $tax['name'], 'properties' => ['data-ref' => 'totals-table-line_tax_' . $i . '-label']],
+                        ['element' => 'span', 'content', 'content' => $this->service->config->formatMoney($tax['total']), 'properties' => ['data-ref' => 'totals-table-line_tax_' . $i]],
+                    ]];
+                }
+            } elseif (Str::startsWith($variable, '$custom_surcharge')) {
+                $_variable = ltrim($variable, '$'); // $custom_surcharge1 -> custom_surcharge1
+
+                $visible = intval($this->service->config->entity->{$_variable}) != 0;
+
+                $elements[1]['elements'][] = ['element' => 'div', 'elements' => [
+                    ['element' => 'span', 'content' => $variable . '_label', 'properties' => ['hidden' => !$visible, 'data-ref' => 'totals_table-' . substr($variable, 1) . '-label']],
+                    ['element' => 'span', 'content' => $variable, 'properties' => ['hidden' => !$visible, 'data-ref' => 'totals_table-' . substr($variable, 1)]],
+                ]];
+            } elseif (Str::startsWith($variable, '$custom')) {
+                $field = explode('_', $variable);
+                $visible = is_object($this->service->company->custom_fields) && property_exists($this->service->company->custom_fields, $field[1]) && !empty($this->service->company->custom_fields->{$field[1]});
+
+                $elements[1]['elements'][] = ['element' => 'div', 'elements' => [
+                    ['element' => 'span', 'content' => $variable . '_label', 'properties' => ['hidden' => !$visible, 'data-ref' => 'totals_table-' . substr($variable, 1) . '-label']],
+                    ['element' => 'span', 'content' => $variable, 'properties' => ['hidden' => !$visible, 'data-ref' => 'totals_table-' . substr($variable, 1)]],
+                ]];
+            } else {
+                $elements[1]['elements'][] = ['element' => 'div', 'elements' => [
+                    ['element' => 'span', 'content' => $variable . '_label', 'properties' => ['data-ref' => 'totals_table-' . substr($variable, 1) . '-label']],
+                    ['element' => 'span', 'content' => $variable, 'properties' => ['data-ref' => 'totals_table-' . substr($variable, 1)]],
+                ]];
+            }
+        }
+
+        $elements[1]['elements'][] = ['element' => 'div', 'elements' => [
+            ['element' => 'span', 'content' => '',],
+            ['element' => 'span', 'content' => ''],
+        ]];
+
+        return $elements;
     }
 
     /**
@@ -1550,7 +1383,7 @@ class PdfBuilder
         $variables = $this->service->config->pdf_variables['client_details'];
 
         foreach ($variables as $variable) {
-            $elements[] = ['element' => 'p', 'content' => 'client:'. $variable, 'show_empty' => false, 'properties' => ['data-ref' => 'client_details-' . substr($variable, 1)]];
+            $elements[] = ['element' => 'p', 'content' => $variable, 'show_empty' => false, 'properties' => ['data-ref' => 'client_details-' . substr($variable, 1)]];
         }
 
         return $elements;

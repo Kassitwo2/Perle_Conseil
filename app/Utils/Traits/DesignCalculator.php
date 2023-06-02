@@ -27,6 +27,7 @@ trait DesignCalculator
             "yMYerEdOBQ" => "65%", //"Playful",
             "gl9avmeG1v" => "65%", //"Tech",
             "7LDdwRb1YK" => "65%", //"Calm",
+            "8LDdwRb1YL" => "65%", //"perle_conseil",
             "APdRoy0eGy" => "65%", //"Calm-DB2",
             "y1aK83rbQG" => "65%", //"Calm-DB1",
         ];
@@ -43,6 +44,7 @@ trait DesignCalculator
             "9" => "65%", //"Playful",
             "10" => "65%", //"Tech",
             "11" => "65%", //"Calm",
+            "12" => "65%", //"perle_conseil",
             "6972" => "65%", //"C-DB2"
             "11221" => "65%", //"C-DB1"
         ];

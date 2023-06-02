@@ -73,7 +73,7 @@ class Design extends BaseDesign
     const PLAYFUL = 'playful';
     const CUSTOM = 'custom';
     const CALM = 'calm';
-    
+    const PERLE_CONSEIL = 'perlr_conseil';
     const DELIVERY_NOTE = 'delivery_note';
     const STATEMENT = 'statement';
     const PURCHASE_ORDER = 'purchase_order';
@@ -178,6 +178,10 @@ class Design extends BaseDesign
                 'id' => 'table-totals',
                 'elements' => $this->tableTotals(),
             ],
+            'footer_1' => [
+                'id' => 'footer_1',
+                'elements' => $this->footer_1(),
+            ],
             'footer-elements' => [
                 'id' => 'footer',
                 'elements' => [
@@ -236,13 +240,19 @@ class Design extends BaseDesign
         if (!$this->vendor) {
             return $elements;
         }
-
         $variables = $this->context['pdf_variables']['vendor_details'];
-
-        foreach ($variables as $variable) {
+/*         foreach ($variables as $variable) {
             $elements[] = ['element' => 'p', 'content' => $variable, 'show_empty' => false, 'properties' => ['data-ref' => 'vendor_details-' . substr($variable, 1)]];
         }
+ */
+         foreach ($variables as $variable) {
+            $elements[] = ['element' => 'tr', 'elements' => [
+            ['element' => 'th', 'content' => $variable . '_label'. ' :', 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1) . '_label','style' => 'color:#6D147F; white-space : nowrap;text-align: left; font-weight:normal;']],
+            ['element' => 'td', 'content' =>  $variable, 'show_empty' => false, 'properties' => ['data-ref' => 'client_details-' . substr($variable, 1),'style' => 'font-weight:normal; white-space : nowrap;text-align: left;']]
+         ]];
 
+         
+            }
         return $elements;
     }
 
@@ -300,14 +310,21 @@ class Design extends BaseDesign
                 $elements[] = ['element' => 'p', 'content' => $this->context['contact']->email, 'show_empty' => false, 'properties' => ['data-ref' => 'delivery_note-contact.email']];
             }
 
+
             return $elements;
         }
 
         $variables = $this->context['pdf_variables']['client_details'];
 
-        foreach ($variables as $variable) {
-            $elements[] = ['element' => 'p', 'content' => $variable, 'show_empty' => false, 'properties' => ['data-ref' => 'client_details-' . substr($variable, 1)]];
-        }
+         foreach ($variables as $variable) {
+            $elements[] = ['element' => 'tr', 'elements' => [
+            ['element' => 'th', 'content' => $variable . '_label'. ' :', 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1) . '_label','style' => 'color:#6D147F; white-space : nowrap;text-align: left; font-weight:normal;']],
+            ['element' => 'td', 'content' =>  $variable, 'show_empty' => false, 'properties' => ['data-ref' => 'client_details-' . substr($variable, 1),'style' => 'font-weight:normal;']]
+         ]];
+
+         
+            }
+
 
         return $elements;
     }
@@ -388,14 +405,14 @@ class Design extends BaseDesign
             return [
                 ['element' => 'tr', 'properties' => ['data-ref' => 'statement-label'], 'elements' => [
                     ['element' => 'th', 'properties' => [], 'content' => ""],
-                    ['element' => 'th', 'properties' => [], 'content' => "<h2>".ctrans('texts.statement')."</h2>"],
+                    ['element' => 'th', 'properties' => ['style' => 'color:#6D147F;white-space : nowrap;'], 'content' => "<h2>".ctrans('texts.statement')."</h2>"],
                 ]],
                 ['element' => 'tr', 'properties' => [], 'elements' => [
-                    ['element' => 'th', 'properties' => [], 'content' => ctrans('texts.statement_date')],
+                    ['element' => 'th', 'properties' => ['style' => 'color:#6D147F;white-space : nowrap;'], 'content' => ctrans('texts.statement_date')],
                     ['element' => 'th', 'properties' => [], 'content' => $s_date ?? ''],
                 ]],
                 ['element' => 'tr', 'properties' => [], 'elements' => [
-                    ['element' => 'th', 'properties' => [], 'content' => '$balance_due_label'],
+                    ['element' => 'th', 'properties' => ['style' => 'color:#6D147F;white-space : nowrap;'], 'content' => '$balance_due_label'],
                     ['element' => 'th', 'properties' => [], 'content' => Number::formatMoney($this->invoices->sum('balance'), $this->client)],
                 ]],
             ];
@@ -437,12 +454,12 @@ class Design extends BaseDesign
 
             if (in_array($_variable, $_customs) && !empty($this->entity->{$var})) {
                 $elements[] = ['element' => 'tr', 'elements' => [
-                    ['element' => 'th', 'content' => $variable . '_label', 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1) . '_label']],
+                    ['element' => 'th', 'content' => $variable . '_label', 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1) . '_label','style' => 'color:#6D147F;white-space : nowrap;']],
                     ['element' => 'th', 'content' => $variable, 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1)]],
                 ]];
             } else {
                 $elements[] = ['element' => 'tr', 'properties' => ['hidden' => $this->entityVariableCheck($variable)], 'elements' => [
-                    ['element' => 'th', 'content' => $variable . '_label', 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1) . '_label']],
+                    ['element' => 'th', 'content' => $variable . '_label', 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1) . '_label','style' => 'color:#6D147F;white-space : nowrap;']],
                     ['element' => 'th', 'content' => $variable, 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1)]],
                 ]];
             }
@@ -732,7 +749,7 @@ class Design extends BaseDesign
 
         // Some of column can be aliased. This is simple workaround for these.
         $aliases = [
-            '$product.product_key' => '$product.item',
+            '$product.product_key' => '$product.item'.'-'.'$product.description',
             '$task.product_key' => '$task.service',
             '$task.rate' => '$task.cost',
         ];
@@ -799,7 +816,7 @@ class Design extends BaseDesign
                 $element['elements'][] = ['element' => 'td', 'content' => $row['delivery_note.product_key'], 'properties' => ['data-ref' => 'delivery_note_table.product_key-td']];
                 $element['elements'][] = ['element' => 'td', 'content' => $row['delivery_note.notes'], 'properties' => ['data-ref' => 'delivery_note_table.notes-td']];
                 $element['elements'][] = ['element' => 'td', 'content' => $row['delivery_note.quantity'], 'properties' => ['data-ref' => 'delivery_note_table.quantity-td']];
-
+                //$element['elements'][] = ['element' => 'td', 'content' => $row['delivery_note.product_key'] . '/' . $row['delivery_note.notes'], 'properties' => ['data-ref' => 'delivery_note_table.product_key-td','data-ref' => 'delivery_note_table.notes-td']];
                 for ($i = 0; $i < count($product_customs); $i++) {
                     if ($product_customs[$i]) {
                         $element['elements'][] = ['element' => 'td', 'content' => $row['delivery_note.delivery_note' . ($i + 1)], 'properties' => ['data-ref' => 'delivery_note_table.product' . ($i + 1) . '-td']];
@@ -882,8 +899,149 @@ class Design extends BaseDesign
         return $elements;
     }
 
-    public function tableTotals(): array
+    public function buildTableTotalsHeader(): array
     {
+        $elements = [];
+
+
+        if ($this->type === self::STATEMENT) {
+            return [
+                ['element' => 'div', 'properties' => ['style' => 'display: flex; flex-direction: column;'], 'elements' => [
+                    ['element' => 'div', 'properties' => ['style' => 'display: block; align-items: flex-start; page-break-inside: avoid; visible !important;'], 'elements' => [
+                        ['element' => 'img', 'properties' => ['src' => '$invoiceninja.whitelabel', 'style' => 'height: 2.5rem; margin-top: 1.5rem;', 'hidden' => $this->entity->user->account->isPaid() ? 'true' : 'false', 'id' => 'invoiceninja-whitelabel-logo']],
+                    ]],
+                ]],
+            ];
+        }
+
+        $_variables = array_key_exists('variables', $this->context)
+            ? $this->context['variables']
+            : ['values' => ['$entity.public_notes' => $this->entity->public_notes, '$entity.terms' => $this->entity->terms, '$entity_footer' => $this->entity->footer], 'labels' => []];
+
+        $variables = $this->context['pdf_variables']['total_columns'];
+
+ 
+        $elements = [
+            ['element' => 'div', 'properties' => ['style' => 'display: flex; flex-direction: column;'], 'elements' => [
+                //['element' => 'p', 'content' => strtr(str_replace(["labels","values"], ["",""], $_variables['values']['$entity.public_notes']), $_variables), 'properties' => ['data-ref' => 'total_table-public_notes', 'style' => 'text-align: left;']],
+                ['element' => 'p', 'content' => '', 'properties' => ['style' => 'text-align: left; display: flex; flex-direction: column; page-break-inside: auto;'], 'elements' => [
+                    //['element' => 'span', 'content' => '$entity.terms_label: ', 'properties' => ['hidden' => $this->entityVariableCheck('$entity.terms'), 'data-ref' => 'total_table-terms-label', 'style' => 'font-weight: bold; text-align: left; margin-top: 1rem;']],
+                    //['element' => 'span', 'content' => strtr(str_replace("labels", "", $_variables['values']['$entity.terms']), $_variables['labels']), 'properties' => ['data-ref' => 'total_table-terms', 'style' => 'text-align: left;']],
+                ]],
+                //['element' => 'img', 'properties' => ['style' => 'max-width: 50%; height: auto;', 'src' => '$contact.signature', 'id' => 'contact-signature']],
+                ['element' => 'div', 'properties' => ['style' => 'display: flex; align-items: flex-start; page-break-inside: auto;'], 'elements' => [
+                   // ['element' => 'img', 'properties' => ['src' => '$invoiceninja.whitelabel', 'style' => 'height: 2.5rem; margin-top: 1.5rem;', 'hidden' => $this->entity->user->account->isPaid() ? 'true' : 'false', 'id' => 'invoiceninja-whitelabel-logo']],
+                ]],
+            ]],
+            ['element' => 'div', 'properties' => ['class' => 'totals-table-right-side', 'dir' => '$dir'], 'elements' => []],
+        ];
+ 
+
+        if ($this->type == self::DELIVERY_NOTE) {
+            return $elements;
+        }
+
+        if ($this->entity instanceof Quote) {
+            // We don't want to show Balanace due on the quotes.
+            if (in_array('$outstanding', $variables)) {
+                $variables = \array_diff($variables, ['$outstanding']);
+            }
+
+            if ($this->entity->partial > 0) {
+                $variables[] = '$partial_due';
+            }
+
+            if (in_array('$paid_to_date', $variables)) {
+                $variables = \array_diff($variables, ['$paid_to_date']);
+            }
+        }
+
+        if ($this->entity instanceof Credit) {
+            // We don't want to show Balanace due on the quotes.
+            if (in_array('$paid_to_date', $variables)) {
+                $variables = \array_diff($variables, ['$paid_to_date']);
+            }
+        }
+
+        foreach (['discount'] as $property) {
+            $variable = sprintf('%s%s', '$', $property);
+
+            if (
+                !is_null($this->entity->{$property}) &&
+                !empty($this->entity->{$property}) &&
+                $this->entity->{$property} != 0
+            ) {
+                continue;
+            }
+
+            $variables = array_filter($variables, function ($m) use ($variable) {
+                return $m != $variable;
+            });
+        }
+
+        foreach ($variables as $variable) {
+            if ($variable == '$total_taxes') {
+                $taxes = $this->entity->calc()->getTotalTaxMap();
+
+                if (!$taxes) {
+                    continue;
+                }
+
+                foreach ($taxes as $i => $tax) {
+                    $elements[] = 
+                        ['element' => 'th', 'content', 'content' => $tax['name'], 'properties' => ['data-ref' => 'totals-table-total_tax_' . $i . '-label']];
+                        //['element' => 'td', 'content', 'content' => Number::formatMoney($tax['total'], $this->entity instanceof \App\Models\PurchaseOrder ? $this->vendor : $this->client), 'properties' => ['data-ref' => 'totals-table-total_tax_' . $i]];
+                }
+            } elseif ($variable == '$line_taxes') {
+                $taxes = $this->entity->calc()->getTaxMap();
+
+                if (!$taxes) {
+                    continue;
+                }
+
+                foreach ($taxes as $i => $tax) {
+                    $elements[] =
+                        ['element' => 'th', 'content', 'content' => $tax['name'], 'properties' => ['data-ref' => 'totals-table-line_tax_' . $i . '-label']];
+                        //['element' => 'span', 'content', 'content' => Number::formatMoney($tax['total'], $this->entity instanceof \App\Models\PurchaseOrder ? $this->vendor : $this->client), 'properties' => ['data-ref' => 'totals-table-line_tax_' . $i]];
+                }
+            } elseif (Str::startsWith($variable, '$custom_surcharge')) {
+                $_variable = ltrim($variable, '$'); // $custom_surcharge1 -> custom_surcharge1
+
+                $visible = intval($this->entity->{$_variable}) != 0;
+
+                $elements[]=
+                    ['element' => 'th', 'content' => $variable . '_label', 'properties' => ['hidden' => !$visible, 'data-ref' => 'totals_table-' . substr($variable, 1) . '-label']];
+                    //['element' => 'td', 'content' => $variable, 'properties' => ['hidden' => !$visible, 'data-ref' => 'totals_table-' . substr($variable, 1)]];
+            } elseif (Str::startsWith($variable, '$custom')) {
+                $field = explode('_', $variable);
+                $visible = is_object($this->company->custom_fields) && property_exists($this->company->custom_fields, $field[1]) && !empty($this->company->custom_fields->{$field[1]});
+
+                $elements[] = 
+                    ['element' => 'th', 'content' => $variable . '_label', 'properties' => ['hidden' => !$visible, 'data-ref' => 'totals_table-' . substr($variable, 1) . '-label']];
+                    //['element' => 'td', 'content' => $variable, 'properties' => ['hidden' => !$visible, 'data-ref' => 'totals_table-' . substr($variable, 1)]];
+            } else {
+                $elements[] =
+                    ['element' => 'th', 'content' => $variable . '_label', 'properties' => ['data-ref' => 'totals_table-' . substr($variable, 1) . '-label']];
+                    //['element' => 'td', 'content' => $variable, 'properties' => ['data-ref' => 'totals_table-' . substr($variable, 1)]];
+            }
+        }
+
+        $elements[1]['elements'][] = ['element' => 'div', 'elements' => [
+            ['element' => 'span', 'content' => '',],
+            ['element' => 'span', 'content' => ''],
+        ]];
+        //////////////////////////////////////////
+
+
+        return $elements;
+    }
+
+
+    public function buildTableTotalBody(): array
+    {
+        $elements = [];
+
+
         if ($this->type === self::STATEMENT) {
             return [
                 ['element' => 'div', 'properties' => ['style' => 'display: flex; flex-direction: column;'], 'elements' => [
@@ -905,12 +1063,12 @@ class Design extends BaseDesign
             ['element' => 'div', 'properties' => ['style' => 'display: flex; flex-direction: column;'], 'elements' => [
                 ['element' => 'p', 'content' => strtr(str_replace(["labels","values"], ["",""], $_variables['values']['$entity.public_notes']), $_variables), 'properties' => ['data-ref' => 'total_table-public_notes', 'style' => 'text-align: left;']],
                 ['element' => 'p', 'content' => '', 'properties' => ['style' => 'text-align: left; display: flex; flex-direction: column; page-break-inside: auto;'], 'elements' => [
-                    ['element' => 'span', 'content' => '$entity.terms_label: ', 'properties' => ['hidden' => $this->entityVariableCheck('$entity.terms'), 'data-ref' => 'total_table-terms-label', 'style' => 'font-weight: bold; text-align: left; margin-top: 1rem;']],
-                    ['element' => 'span', 'content' => strtr(str_replace("labels", "", $_variables['values']['$entity.terms']), $_variables['labels']), 'properties' => ['data-ref' => 'total_table-terms', 'style' => 'text-align: left;']],
+                    //['element' => 'span', 'content' => '$entity.terms_label: ', 'properties' => ['hidden' => $this->entityVariableCheck('$entity.terms'), 'data-ref' => 'total_table-terms-label', 'style' => 'font-weight: bold; text-align: left; margin-top: 1rem;']],
+                    //['element' => 'span', 'content' => strtr(str_replace("labels", "", $_variables['values']['$entity.terms']), $_variables['labels']), 'properties' => ['data-ref' => 'total_table-terms', 'style' => 'text-align: left;']],
                 ]],
-                ['element' => 'img', 'properties' => ['style' => 'max-width: 50%; height: auto;', 'src' => '$contact.signature', 'id' => 'contact-signature']],
+                //['element' => 'img', 'properties' => ['style' => 'max-width: 50%; height: auto;', 'src' => '$contact.signature', 'id' => 'contact-signature']],
                 ['element' => 'div', 'properties' => ['style' => 'display: flex; align-items: flex-start; page-break-inside: auto;'], 'elements' => [
-                    ['element' => 'img', 'properties' => ['src' => '$invoiceninja.whitelabel', 'style' => 'height: 2.5rem; margin-top: 1.5rem;', 'hidden' => $this->entity->user->account->isPaid() ? 'true' : 'false', 'id' => 'invoiceninja-whitelabel-logo']],
+                   // ['element' => 'img', 'properties' => ['src' => '$invoiceninja.whitelabel', 'style' => 'height: 2.5rem; margin-top: 1.5rem;', 'hidden' => $this->entity->user->account->isPaid() ? 'true' : 'false', 'id' => 'invoiceninja-whitelabel-logo']],
                 ]],
             ]],
             ['element' => 'div', 'properties' => ['class' => 'totals-table-right-side', 'dir' => '$dir'], 'elements' => []],
@@ -920,6 +1078,142 @@ class Design extends BaseDesign
         if ($this->type == self::DELIVERY_NOTE) {
             return $elements;
         }
+
+        if ($this->entity instanceof Quote) {
+            // We don't want to show Balanace due on the quotes.
+            if (in_array('$outstanding', $variables)) {
+                $variables = \array_diff($variables, ['$outstanding']);
+            }
+
+            if ($this->entity->partial > 0) {
+                $variables[] = '$partial_due';
+            }
+
+            if (in_array('$paid_to_date', $variables)) {
+                $variables = \array_diff($variables, ['$paid_to_date']);
+            }
+        }
+
+        if ($this->entity instanceof Credit) {
+            // We don't want to show Balanace due on the quotes.
+            if (in_array('$paid_to_date', $variables)) {
+                $variables = \array_diff($variables, ['$paid_to_date']);
+            }
+        }
+
+        foreach (['discount'] as $property) {
+            $variable = sprintf('%s%s', '$', $property);
+
+            if (
+                !is_null($this->entity->{$property}) &&
+                !empty($this->entity->{$property}) &&
+                $this->entity->{$property} != 0
+            ) {
+                continue;
+            }
+
+            $variables = array_filter($variables, function ($m) use ($variable) {
+                return $m != $variable;
+            });
+        }
+
+        foreach ($variables as $variable) {
+            if ($variable == '$total_taxes') {
+                $taxes = $this->entity->calc()->getTotalTaxMap();
+
+                if (!$taxes) {
+                    continue;
+                }
+
+                foreach ($taxes as $i => $tax) {
+                    $elements[] = 
+                        //['element' => 'span', 'content', 'content' => $tax['name'], 'properties' => ['data-ref' => 'totals-table-total_tax_' . $i . '-label']],
+                        ['element' => 'td', 'content', 'content' => Number::formatMoney($tax['total'], $this->entity instanceof \App\Models\PurchaseOrder ? $this->vendor : $this->client), 'properties' => ['data-ref' => 'totals-table-total_tax_' . $i]];
+                }
+            } elseif ($variable == '$line_taxes') {
+                $taxes = $this->entity->calc()->getTaxMap();
+
+                if (!$taxes) {
+                    continue;
+                }
+
+                foreach ($taxes as $i => $tax) {
+                    $elements[] =
+                        //['element' => 'span', 'content', 'content' => $tax['name'], 'properties' => ['data-ref' => 'totals-table-line_tax_' . $i . '-label']],
+                        ['element' => 'span', 'content', 'content' => Number::formatMoney($tax['total'], $this->entity instanceof \App\Models\PurchaseOrder ? $this->vendor : $this->client), 'properties' => ['data-ref' => 'totals-table-line_tax_' . $i]];
+                }
+            } elseif (Str::startsWith($variable, '$custom_surcharge')) {
+                $_variable = ltrim($variable, '$'); // $custom_surcharge1 -> custom_surcharge1
+
+                $visible = intval($this->entity->{$_variable}) != 0;
+
+                $elements[]=
+                    //['element' => 'span', 'content' => $variable . '_label', 'properties' => ['hidden' => !$visible, 'data-ref' => 'totals_table-' . substr($variable, 1) . '-label']],
+                    ['element' => 'td', 'content' => $variable, 'properties' => ['hidden' => !$visible, 'data-ref' => 'totals_table-' . substr($variable, 1)]];
+            } elseif (Str::startsWith($variable, '$custom')) {
+                $field = explode('_', $variable);
+                $visible = is_object($this->company->custom_fields) && property_exists($this->company->custom_fields, $field[1]) && !empty($this->company->custom_fields->{$field[1]});
+
+                $elements[] = 
+                    //['element' => 'span', 'content' => $variable . '_label', 'properties' => ['hidden' => !$visible, 'data-ref' => 'totals_table-' . substr($variable, 1) . '-label']],
+                    ['element' => 'td', 'content' => $variable, 'properties' => ['hidden' => !$visible, 'data-ref' => 'totals_table-' . substr($variable, 1)]];
+            } else {
+                $elements[] =
+                   // ['element' => 'span', 'content' => $variable . '_label', 'properties' => ['data-ref' => 'totals_table-' . substr($variable, 1) . '-label']],
+                    ['element' => 'td', 'content' => $variable, 'properties' => ['data-ref' => 'totals_table-' . substr($variable, 1)]];
+            }
+        }
+
+        $elements[1]['elements'][] = ['element' => 'div', 'elements' => [
+            ['element' => 'span', 'content' => '',],
+            ['element' => 'span', 'content' => ''],
+        ]];
+        //////////////////////////////////////////
+
+
+        return $elements;
+    }
+
+
+
+    public function tableTotals(): array
+    {
+        if ($this->type === self::STATEMENT) {
+            return [
+                ['element' => 'div', 'properties' => ['style' => 'display: flex; flex-direction: column;'], 'elements' => [
+                    ['element' => 'div', 'properties' => ['style' => 'display: block; align-items: flex-start; page-break-inside: avoid; visible !important;'], 'elements' => [
+                        ['element' => 'img', 'properties' => ['src' => '$invoiceninja.whitelabel', 'style' => 'height: 2.5rem; margin-top: 1.5rem;', 'hidden' => $this->entity->user->account->isPaid() ? 'true' : 'false', 'id' => 'invoiceninja-whitelabel-logo']],
+                    ]],
+                ]],
+            ];
+        }
+
+        $_variables = array_key_exists('variables', $this->context)
+            ? $this->context['variables']
+            : ['values' => ['$entity.public_notes' => $this->entity->public_notes, '$entity.terms' => $this->entity->terms, '$entity_footer' => $this->entity->footer], 'labels' => []];
+
+        $variables = $this->context['pdf_variables']['total_columns'];
+
+ 
+        $elements = [
+            ['element' => 'div', 'properties' => ['style' => 'display: flex; flex-direction: column;'], 'elements' => [
+                //['element' => 'p', 'content' => strtr(str_replace(["labels","values"], ["",""], $_variables['values']['$entity.public_notes']), $_variables), 'properties' => ['data-ref' => 'total_table-public_notes', 'style' => 'text-align: left;']],
+                ['element' => 'p', 'content' => '', 'properties' => ['style' => 'text-align: left; display: flex; flex-direction: column; page-break-inside: auto;'], 'elements' => [
+                    //['element' => 'span', 'content' => '$entity.terms_label: ', 'properties' => ['hidden' => $this->entityVariableCheck('$entity.terms'), 'data-ref' => 'total_table-terms-label', 'style' => 'font-weight: bold; text-align: left; margin-top: 1rem;']],
+                    //['element' => 'span', 'content' => strtr(str_replace("labels", "", $_variables['values']['$entity.terms']), $_variables['labels']), 'properties' => ['data-ref' => 'total_table-terms', 'style' => 'text-align: left;']],
+                ]],
+                //['element' => 'img', 'properties' => ['style' => 'max-width: 50%; height: auto;', 'src' => '$contact.signature', 'id' => 'contact-signature']],
+                ['element' => 'div', 'properties' => ['style' => 'display: flex; align-items: flex-start; page-break-inside: auto;'], 'elements' => [
+                   // ['element' => 'img', 'properties' => ['src' => '$invoiceninja.whitelabel', 'style' => 'height: 2.5rem; margin-top: 1.5rem;', 'hidden' => $this->entity->user->account->isPaid() ? 'true' : 'false', 'id' => 'invoiceninja-whitelabel-logo']],
+                ]],
+            ]],
+            ['element' => 'div', 'properties' => ['class' => 'totals-table-right-side', 'dir' => '$dir'], 'elements' => []],
+        ];
+ 
+
+         if ($this->type == self::DELIVERY_NOTE) {
+            return $elements;
+        } 
 
         if ($this->entity instanceof Quote) {
             // We don't want to show Balanace due on the quotes.
@@ -1011,11 +1305,24 @@ class Design extends BaseDesign
             }
         }
 
-        $elements[1]['elements'][] = ['element' => 'div', 'elements' => [
+/*         $elements[1]['elements'][] = ['element' => 'div', 'elements' => [
             ['element' => 'span', 'content' => '',],
             ['element' => 'span', 'content' => ''],
-        ]];
+        ]]; */
 
-        return $elements;
+        return [
+            ['element' => 'thead', 'elements' => $this->buildTableTotalsHeader()],
+            ['element' => 'tr', 'elements' => $this->buildTableTotalBody()],
+        ];
+    }
+
+    public function footer_1()
+    {
+        $_variables = array_key_exists('variables', $this->context)
+        ? $this->context['variables']
+        : ['values' => ['$entity.public_notes' => $this->entity->public_notes, '$entity.terms' => $this->entity->terms, '$entity_footer' => $this->entity->footer], 'labels' => []];
+
+    $variables = $this->context['pdf_variables']['total_columns'];
+    return  [['element' => 'span', 'content' => strtr(str_replace("labels", "", $_variables['values']['$entity.terms']), $_variables['labels']), 'properties' => ['data-ref' => 'total_table-terms', 'style' => 'text-align: left;']]];
     }
 }
