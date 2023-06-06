@@ -251,7 +251,7 @@ class Design extends BaseDesign
             ['element' => 'td', 'content' =>  $variable, 'show_empty' => false, 'properties' => ['data-ref' => 'client_details-' . substr($variable, 1),'style' => 'font-weight:normal; white-space : nowrap;text-align: left;']]
          ]];
 
-         
+
             }
         return $elements;
     }
@@ -322,7 +322,7 @@ class Design extends BaseDesign
             ['element' => 'td', 'content' =>  $variable, 'show_empty' => false, 'properties' => ['data-ref' => 'client_details-' . substr($variable, 1),'style' => 'font-weight:normal;']]
          ]];
 
-         
+
             }
 
 
@@ -349,7 +349,7 @@ class Design extends BaseDesign
 
         if ($this->entity instanceof Quote) {
             $variables = $this->context['pdf_variables']['quote_details'];
-            
+
             if ($this->entity->partial > 0) {
                 $variables[] = '$quote.balance_due';
             }
@@ -399,7 +399,7 @@ class Design extends BaseDesign
     {
         if ($this->type === 'statement') {
             // $s_date = $this->translateDate(now(), $this->client->date_format(), $this->client->locale());
-            
+
             $s_date = $this->translateDate($this->options['start_date'], $this->client->date_format(), $this->client->locale()) . " - " . $this->translateDate($this->options['end_date'], $this->client->date_format(), $this->client->locale());
 
             return [
@@ -422,7 +422,7 @@ class Design extends BaseDesign
 
         if ($this->entity instanceof Quote) {
             $variables = $this->context['pdf_variables']['quote_details'];
-            
+
             if ($this->entity->partial > 0) {
                 $variables[] = '$quote.balance_due';
             }
@@ -454,8 +454,8 @@ class Design extends BaseDesign
 
             if (in_array($_variable, $_customs) && !empty($this->entity->{$var})) {
                 $elements[] = ['element' => 'tr', 'elements' => [
-                    ['element' => 'th', 'content' => $variable . '_label', 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1) . '_label','style' => 'color:#6D147F;white-space : nowrap;']],
-                    ['element' => 'th', 'content' => $variable, 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1)]],
+                    ['element' => 'th', 'content' => $variable . '_label', 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1) . '_label','style' => 'color:#6D147F;white-space : nowrap;padding-top:100px']],
+                    ['element' => 'th', 'content' => $variable, 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1),'style'=> 'padding-top:100px; max-width:300px']],
                 ]];
             } else {
                 $elements[] = ['element' => 'tr', 'properties' => ['hidden' => $this->entityVariableCheck($variable)], 'elements' => [
@@ -632,7 +632,7 @@ class Design extends BaseDesign
                 $element['elements'][] = ['element' => 'td', 'content' => Number::formatMoney($payment->pivot->amount, $this->client) ?: '&nbsp;'];
 
                 $tbody[] = $element;
-                
+
                 $this->payment_amount_total += $payment->pivot->amount;
             }
         }
@@ -700,7 +700,7 @@ class Design extends BaseDesign
         if (\array_key_exists('show_payments_table', $this->options) && $this->options['show_payments_table'] === false) {
             return [];
         }
-        
+
         $payment = $this->payments->first();
 
         return [
@@ -759,7 +759,7 @@ class Design extends BaseDesign
         if ($type == 'product' && $this->entity instanceof Quote && !$this->settings_object->getSetting('sync_invoice_quote_columns')) {
             $table_type = "product_quote_columns";
         }
-            
+
         foreach ($this->context['pdf_variables'][$table_type] as $column) {
             if (array_key_exists($column, $aliases)) {
                 $elements[] = ['element' => 'th', 'content' => $aliases[$column] . '_label', 'properties' => ['data-ref' => "{$type}_table-" . substr($aliases[$column], 1) . '-th', 'hidden' => $this->settings_object->getSetting('hide_empty_columns_on_pdf')]];
@@ -831,7 +831,7 @@ class Design extends BaseDesign
 
         $_type = Str::startsWith($type, '$') ? ltrim($type, '$') : $type;
         $table_type = "{$_type}_columns";
-        
+
         if ($_type == 'product' && $this->entity instanceof Quote && !$this->settings_object->getSetting('sync_invoice_quote_columns')) {
             $table_type = "product_quote_columns";
         }
@@ -895,7 +895,7 @@ class Design extends BaseDesign
         }
 
         $document = null;
-        
+
         return $elements;
     }
 
@@ -920,7 +920,7 @@ class Design extends BaseDesign
 
         $variables = $this->context['pdf_variables']['total_columns'];
 
- 
+
         $elements = [
             ['element' => 'div', 'properties' => ['style' => 'display: flex; flex-direction: column;'], 'elements' => [
                 //['element' => 'p', 'content' => strtr(str_replace(["labels","values"], ["",""], $_variables['values']['$entity.public_notes']), $_variables), 'properties' => ['data-ref' => 'total_table-public_notes', 'style' => 'text-align: left;']],
@@ -935,7 +935,7 @@ class Design extends BaseDesign
             ]],
             ['element' => 'div', 'properties' => ['class' => 'totals-table-right-side', 'dir' => '$dir'], 'elements' => []],
         ];
- 
+
 
         if ($this->type == self::DELIVERY_NOTE) {
             return $elements;
@@ -988,7 +988,7 @@ class Design extends BaseDesign
                 }
 
                 foreach ($taxes as $i => $tax) {
-                    $elements[] = 
+                    $elements[] =
                         ['element' => 'th', 'content', 'content' => $tax['name'], 'properties' => ['data-ref' => 'totals-table-total_tax_' . $i . '-label']];
                         //['element' => 'td', 'content', 'content' => Number::formatMoney($tax['total'], $this->entity instanceof \App\Models\PurchaseOrder ? $this->vendor : $this->client), 'properties' => ['data-ref' => 'totals-table-total_tax_' . $i]];
                 }
@@ -1016,7 +1016,7 @@ class Design extends BaseDesign
                 $field = explode('_', $variable);
                 $visible = is_object($this->company->custom_fields) && property_exists($this->company->custom_fields, $field[1]) && !empty($this->company->custom_fields->{$field[1]});
 
-                $elements[] = 
+                $elements[] =
                     ['element' => 'th', 'content' => $variable . '_label', 'properties' => ['hidden' => !$visible, 'data-ref' => 'totals_table-' . substr($variable, 1) . '-label']];
                     //['element' => 'td', 'content' => $variable, 'properties' => ['hidden' => !$visible, 'data-ref' => 'totals_table-' . substr($variable, 1)]];
             } else {
@@ -1126,7 +1126,7 @@ class Design extends BaseDesign
                 }
 
                 foreach ($taxes as $i => $tax) {
-                    $elements[] = 
+                    $elements[] =
                         //['element' => 'span', 'content', 'content' => $tax['name'], 'properties' => ['data-ref' => 'totals-table-total_tax_' . $i . '-label']],
                         ['element' => 'td', 'content', 'content' => Number::formatMoney($tax['total'], $this->entity instanceof \App\Models\PurchaseOrder ? $this->vendor : $this->client), 'properties' => ['data-ref' => 'totals-table-total_tax_' . $i]];
                 }
@@ -1154,7 +1154,7 @@ class Design extends BaseDesign
                 $field = explode('_', $variable);
                 $visible = is_object($this->company->custom_fields) && property_exists($this->company->custom_fields, $field[1]) && !empty($this->company->custom_fields->{$field[1]});
 
-                $elements[] = 
+                $elements[] =
                     //['element' => 'span', 'content' => $variable . '_label', 'properties' => ['hidden' => !$visible, 'data-ref' => 'totals_table-' . substr($variable, 1) . '-label']],
                     ['element' => 'td', 'content' => $variable, 'properties' => ['hidden' => !$visible, 'data-ref' => 'totals_table-' . substr($variable, 1)]];
             } else {
@@ -1194,7 +1194,7 @@ class Design extends BaseDesign
 
         $variables = $this->context['pdf_variables']['total_columns'];
 
- 
+
         $elements = [
             ['element' => 'div', 'properties' => ['style' => 'display: flex; flex-direction: column;'], 'elements' => [
                 //['element' => 'p', 'content' => strtr(str_replace(["labels","values"], ["",""], $_variables['values']['$entity.public_notes']), $_variables), 'properties' => ['data-ref' => 'total_table-public_notes', 'style' => 'text-align: left;']],
@@ -1209,11 +1209,11 @@ class Design extends BaseDesign
             ]],
             ['element' => 'div', 'properties' => ['class' => 'totals-table-right-side', 'dir' => '$dir'], 'elements' => []],
         ];
- 
+
 
          if ($this->type == self::DELIVERY_NOTE) {
             return $elements;
-        } 
+        }
 
         if ($this->entity instanceof Quote) {
             // We don't want to show Balanace due on the quotes.
