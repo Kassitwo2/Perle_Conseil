@@ -322,8 +322,8 @@ class Design extends BaseDesign
 
          foreach ($variables as $variable) {
             $elements[] = ['element' => 'tr', 'elements' => [
-            ['element' => 'th', 'content' => $variable . '_label'. ' :', 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1) . '_label','style' => 'color:#6D147F; white-space : nowrap;text-align: left; font-weight:normal;']],
-            ['element' => 'td', 'content' =>  $variable, 'show_empty' => false, 'properties' => ['data-ref' => 'client_details-' . substr($variable, 1)],'style' => 'font-weight:normal;']
+            ['element' => 'th', 'content' => $variable . '_label'. ' :', 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1) . '_label','style' => 'color:#6D147F; white-space : nowrap;text-align: left; font-weight:normal;vertical-align: top;']],
+            ['element' => 'td', 'content' =>  $variable, 'show_empty' => false, 'properties' => ['data-ref' => 'client_details-' . substr($variable, 1), 'style' => 'font-weight:normal;; vertical-align: top']]
 
          ]];
 
@@ -458,7 +458,7 @@ class Design extends BaseDesign
 
                 $elements[] = ['element' => 'tr', 'properties' => ['hidden' => $this->entityVariableCheck($variable)], 'elements' => [
                     ['element' => 'th', 'content' => $variable . '_label', 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1) . '_label','style' => 'color:#6D147F;white-space : nowrap;']],
-                    ['element' => 'th', 'content' => $variable, 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1)]],
+                    ['element' => 'td', 'content' => $variable, 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1),'style' => 'font-weight:normal']],
                 ]];
 
         }
@@ -526,8 +526,8 @@ class Design extends BaseDesign
 
             if (in_array($_variable, $_customs) && !empty($this->entity->{$var})) {
                 $elements[] = ['element' => 'tr', 'elements' => [
-                    ['element' => 'th', 'content' => $variable . '_label', 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1) . '_label','style' => 'color:#6D147F;white-space : nowrap;padding-top:100px']],
-                    ['element' => 'td', 'content' => $variable, 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1),'style'=> 'padding-top:100px;max-width: 730px;']],
+                    ['element' => 'td', 'content' => $variable . '_label', 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1) . '_label','style' => 'padding-left:20px;color:#6D147F;white-space : nowrap;padding-top:100px; vertical-align: top']],
+                    ['element' => 'td', 'content' => $variable, 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1),'style'=> 'padding-left:10px; padding-top:100px;max-width: 730px;; vertical-align: top']],
                 ]];
             }
         }
@@ -1391,6 +1391,7 @@ class Design extends BaseDesign
         : ['values' => ['$entity.public_notes' => $this->entity->public_notes, '$entity.terms' => $this->entity->terms, '$entity_footer' => $this->entity->footer], 'labels' => []];
 
     $variables = $this->context['pdf_variables']['total_columns'];
+
     return  [['element' => 'span', 'content' => strtr(str_replace("labels", "", $_variables['values']['$entity.terms']), $_variables['labels']), 'properties' => ['data-ref' => 'total_table-terms', 'style' => 'text-align: left;']]];
     }
 }
