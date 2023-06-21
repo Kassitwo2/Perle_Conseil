@@ -915,8 +915,18 @@
                         <table id="table-totals" style="margin-top: 10px; margin-bottom: 10px;" cellspacing="0">
                             $status_logo
                         </table>
+
                     </div>
+
                 </td>
+
+
+            </tr>
+            <tr>
+                <td style="padding-top: 30px;">
+                    <table id="footer_1" data-ref="footer_1" ></table>
+                </td>
+
             </tr>
         </tbody>
         <tfoot>
@@ -944,7 +954,7 @@
 $entity_images
 
 <div>
-    <p id="footer_1" data-ref="footer_1"></p>
+
 
     <p data-ref="total_table-footer">$entity_footer</p>
     <p id="footer" style="font-size: smaller;text-align: center;border-top: 0.5px solid #000;">
@@ -983,8 +993,8 @@ $entity_images
             let descriptionColumn = row.querySelector("td[data-ref='product_table-product.description-td']");
 
             // merge the content of item and description columns
-            itemColumn.innerHTML = "<b>" + itemColumn.innerHTML + "</b><br/>";
-            itemColumn.innerHTML += descriptionColumn.innerHTML;
+            itemColumn.innerHTML = "<p><b>" + itemColumn.textContent + "</b><p/>";
+            itemColumn.innerHTML += descriptionColumn.textContent;
             //itemColumn.innerHTML = "<br><strong>" + itemColumn.innerHTML + "</strong>"+"<br>"+descriptionColumn.innerHTML;
 
             //"<br><b>" += itemColumn.innerHTML + "<b><br>" += descriptionColumn.innerHTML + "</b>";

@@ -155,7 +155,7 @@ class HtmlEngine
             $data['$number'] = ['value' => $this->entity->number ?: ' ', 'label' => ctrans('texts.invoice_number')];
             $data['$invoice'] = ['value' => $this->entity->number ?: ' ', 'label' => ctrans('texts.invoice_number')];
             $data['$number_short'] = ['value' => $this->entity->number ?: ' ', 'label' => ctrans('texts.invoice_number_short')];
-            $data['$entity.terms'] = ['value' => 'Arrêtée la présente facture à la somme de : ' . Helpers::processReservedKeywords(\nl2br($this->entity->terms ?: ''), $this->client) ?: '', 'label' => ctrans('texts.invoice_terms')];
+            $data['$entity.terms'] = ['value' => 'Arrêtée la présente facture à la somme de : <span>' . Helpers::processReservedKeywords(\nl2br($this->entity->terms.'</span>' ?: ''), $this->client) ?: '', 'label' => ctrans('texts.invoice_terms')];
             $data['$terms'] = &$data['$entity.terms'];
             $data['$view_link'] = ['value' => $this->buildViewButton($this->invitation->getLink(), ctrans('texts.view_invoice')), 'label' => ctrans('texts.view_invoice')];
             $data['$viewLink'] = &$data['$view_link'];

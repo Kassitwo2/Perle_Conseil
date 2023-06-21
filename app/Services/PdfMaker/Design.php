@@ -1392,6 +1392,12 @@ class Design extends BaseDesign
 
     $variables = $this->context['pdf_variables']['total_columns'];
 
-    return  [['element' => 'span', 'content' => strtr(str_replace("labels", "", $_variables['values']['$entity.terms']), $_variables['labels']), 'properties' => ['data-ref' => 'total_table-terms', 'style' => 'text-align: left;']]];
+    $elements[] = ['element' => 'tr', 'elements' => [
+        ['element' => 'span',
+        'content' => strtr(str_replace("labels", "", $_variables['values']['$entity.terms']), $_variables['labels']),
+        'properties' => ['data-ref' => 'total_table-terms', 'style' => 'text-align: left;']]
+
+    ]];
+        return $elements;
     }
 }
