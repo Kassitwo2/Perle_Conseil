@@ -211,7 +211,7 @@ class HtmlEngine
             $data['$entity'] = ['value' => ctrans('texts.quote'), 'label' => ctrans('texts.quote')];
             $data['$number'] = ['value' => $this->entity->number ?: '', 'label' => ctrans('texts.quote_number')];
             $data['$number_short'] = ['value' => $this->entity->number ?: '', 'label' => ctrans('texts.quote_number_short')];
-            $data['$entity.terms'] = ['value' => 'Arrêtée la devis à la somme de : ' . Helpers::processReservedKeywords(\nl2br($this->entity->terms ?: '') . " <div style='margin-top:100px'><span>En votre aimable réception </span><span style='padding-left:450px'>BON POUR ACCORD </span></div> ", $this->client) ?: '', 'label' => ctrans('texts.quote_terms')];
+            $data['$entity.terms'] = ['value' => '<div style="margin-top:50px">Arrêtée la devis à la somme de : ' . Helpers::processReservedKeywords(\nl2br($this->entity->terms ?: '') . "</div> <div style='margin-top:100px'><span>En votre aimable réception </span><span style='padding-left:400px'>BON POUR ACCORD </span></div> ", $this->client) ?: '', 'label' => ctrans('texts.quote_terms')];
             $data['$terms'] = &$data['$entity.terms'];
             $data['$view_link'] = ['value' => $this->buildViewButton($this->invitation->getLink(), ctrans('texts.view_quote')), 'label' => ctrans('texts.view_quote')];
             $data['$viewLink'] = &$data['$view_link'];

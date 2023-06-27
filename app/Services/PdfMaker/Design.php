@@ -138,6 +138,11 @@ class Design extends BaseDesign
                 'id' => 'entityDetails_objet',
                 'elements' => $this->entityDetails_objet(),
             ],
+            'deliveryNote_top' => [
+                'id' => 'deliveryNote_top',
+                'elements' => $this->deliveryNote_top(),
+            ],
+
             'delivery-note-table' => [
                 'id' => 'delivery-note-table',
                 'elements' => $this->deliveryNoteTable(),
@@ -475,7 +480,7 @@ class Design extends BaseDesign
 
                 $elements[] = ['element' => 'tr', 'properties' => ['hidden' => $this->entityVariableCheck($variable)], 'elements' => [
                     ['element' => 'td', 'content' => $variable . '_label', 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1) . '_label','style' => 'color:#6D147F;white-space : nowrap;']],
-                    ['element' => 'td', 'content' => $variable, 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1),'style' => 'font-weight:normal']],
+                    ['element' => 'td', 'content' => $variable, 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1),'style' => 'white-space : nowrap;font-weight:normal']],
                 ]];
 
         }
@@ -548,10 +553,61 @@ class Design extends BaseDesign
                     ['element' => 'td', 'content' => $variable, 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1),'style'=> 'padding-left:10px;max-width: 730px;; vertical-align: top']],
                 ]];
             }
+            // if ($this->type == self::DELIVERY_NOTE) {
+            //     if (in_array($_variable, $_customs) && !empty($this->entity->{$var})) {
+            //         $elements[] = ['element' => 'tr', 'elements' => [
+            //             ['element' => 'td', 'content' => 'Le présent bon de livraison confirme la réception en bonne et due forme des éléments mentionnés ci-dessous.','properties' => ['style'=> 'white-space:nowrap; padding-top:50px; padding-left:20px; max-width:600px !important','colspan'=> 2]],
+            //         ]];
+            //     }
+            // }
+        }
+
+        return $elements;
+
+    }
+    public function deliveryNote_top(): array
+    {
+
+
+        $variables = $this->context['pdf_variables']['invoice_details'];
+
+        if ($this->entity instanceof Quote) {
+            $variables = $this->context['pdf_variables']['quote_details'];
+
+            if ($this->entity->partial > 0) {
+                $variables[] = '$quote.balance_due';
+            }
+        }
+
+        if ($this->entity instanceof Credit) {
+            $variables = $this->context['pdf_variables']['credit_details'];
+        }
+
+        if ($this->vendor) {
+            $variables = $this->context['pdf_variables']['purchase_order_details'];
+        }
+
+        $elements = [];
+
+        // We don't want to show account balance or invoice total on PDF.. or any amount with currency.
+        // if ($this->type == self::DELIVERY_NOTE) {
+        //     $variables = array_filter($variables, function ($m) {
+        //         return !in_array($m, ['$invoice.balance_due', '$invoice.total']);
+        //     });
+        // }
+
+        foreach ($variables as $variable) {
+            $_variable = explode('.', $variable)[1];
+            $_customs = ['custom1', 'custom2', 'custom3', 'custom4'];
+
+            /* 2/7/2022 don't show custom values if they are empty */
+            $var = str_replace("custom", "custom_value", $_variable);
+
+
             if ($this->type == self::DELIVERY_NOTE) {
                 if (in_array($_variable, $_customs) && !empty($this->entity->{$var})) {
-                    $elements[] = ['element' => 'tr', 'elements' => [
-                        ['element' => 'td', 'content' => 'Le présent bon de livraison confirme la réception en bonne et due forme des éléments mentionnés ci-dessous.','properties' => ['style'=> 'white-space:nowrap; padding-top:50px; padding-left:20px;','colspan'=> 2]],
+                    $elements[] = ['element' => 'div', 'elements' => [
+                        ['element' => 'p', 'content' => 'Le présent bon de livraison confirme la réception en bonne et due forme des éléments mentionnés ci-dessous.','properties' => ['style'=> 'padding-top:50px; padding-left:20px;']],
                     ]];
                 }
             }
@@ -563,6 +619,7 @@ class Design extends BaseDesign
 
 
 
+
     public function deliveryNoteTable(): array
     {
         if ($this->type !== self::DELIVERY_NOTE) {
@@ -571,7 +628,7 @@ class Design extends BaseDesign
 
         $thead = [
             // ['element' => 'th', 'content' => '$item_label', 'properties' => ['data-ref' => 'delivery_note-item_label']],
-            ['element' => 'th', 'content' => 'Désignation', 'properties' => ['data-ref' => 'delivery_note-description_label']],
+            ['element' => 'th', 'content' => 'Désignation', 'properties' => ['data-ref' => 'delivery_note-description_label','style'=>'text-align:center']],
             ['element' => 'th', 'content' => '$product.quantity_label', 'properties' => ['data-ref' => 'delivery_note-product.quantity_label']],
         ];
 
@@ -1423,7 +1480,7 @@ class Design extends BaseDesign
     ]];
     if ($this->type == self::DELIVERY_NOTE) {
             $elements[] = ['element' => 'div', 'elements' => [
-                ['element' => 'p', 'content' => 'En votre aimable réception <span style="padding-left:380px"> Cachet et signature à la réception</span>','properties' => ['style'=> '']],
+                ['element' => 'p', 'content' => 'En votre aimable réception <span style="padding-left:310px"> Cachet et signature à la réception</span>','properties' => ['style'=> '']],
             ]];
     }
         return $elements;
