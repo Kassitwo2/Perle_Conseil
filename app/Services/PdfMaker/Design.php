@@ -298,20 +298,20 @@ class Design extends BaseDesign
 
         if ($this->type == self::DELIVERY_NOTE) {
             $elements = [
-                ['element' => 'p', 'content' => ctrans('texts.delivery_note'), 'properties' => ['data-ref' => 'delivery_note-label', 'style' => 'font-weight: bold; text-transform: uppercase']],
-                ['element' => 'p', 'content' => $this->client->name, 'show_empty' => false, 'properties' => ['data-ref' => 'delivery_note-client.name']],
-                ['element' => 'p', 'content' => $this->client->shipping_address1, 'show_empty' => false, 'properties' => ['data-ref' => 'delivery_note-client.shipping_address1']],
-                ['element' => 'p', 'content' => $this->client->shipping_address2, 'show_empty' => false, 'properties' => ['data-ref' => 'delivery_note-client.shipping_address2']],
+                ['element' => 'p', 'content' => '', 'properties' => ['data-ref' => 'delivery_note-label', 'style' => 'font-weight: bold; text-transform: uppercase']],
+                ['element' => 'p', 'content' => '<span style="color:#6D147F; padding-right:4px; line-height:1.6">Client: </span> '. $this->client->name, 'show_empty' => false, 'properties' => ['data-ref' => 'delivery_note-client.name']],
+                // ['element' => 'p', 'content' => $this->client->shipping_address1, 'show_empty' => false, 'properties' => ['data-ref' => 'delivery_note-client.shipping_address1']],
+                // ['element' => 'p', 'content' => $this->client->shipping_address2, 'show_empty' => false, 'properties' => ['data-ref' => 'delivery_note-client.shipping_address2']],
                 ['element' => 'p', 'show_empty' => false, 'elements' => [
-                    ['element' => 'span', 'content' => "{$this->client->shipping_city} ", 'properties' => ['ref' => 'delivery_note-client.shipping_city']],
-                    ['element' => 'span', 'content' => "{$this->client->shipping_state} ", 'properties' => ['ref' => 'delivery_note-client.shipping_state']],
-                    ['element' => 'span', 'content' => "{$this->client->shipping_postal_code} ", 'properties' => ['ref' => 'delivery_note-client.shipping_postal_code']],
+                    // ['element' => 'span', 'content' => "{$this->client->shipping_city} ", 'properties' => ['ref' => 'delivery_note-client.shipping_city']],
+                    // ['element' => 'span', 'content' => "{$this->client->shipping_state} ", 'properties' => ['ref' => 'delivery_note-client.shipping_state']],
+                    // ['element' => 'span', 'content' => "{$this->client->shipping_postal_code} ", 'properties' => ['ref' => 'delivery_note-client.shipping_postal_code']],
                 ]],
-                ['element' => 'p', 'content' => optional($this->client->shipping_country)->name, 'show_empty' => false],
+                // ['element' => 'p', 'content' => optional($this->client->shipping_country)->name, 'show_empty' => false],
             ];
 
             if (!is_null($this->context['contact'])) {
-                $elements[] = ['element' => 'p', 'content' => $this->context['contact']->email, 'show_empty' => false, 'properties' => ['data-ref' => 'delivery_note-contact.email']];
+                // $elements[] = ['element' => 'p', 'content' => $this->context['contact']->email, 'show_empty' => false, 'properties' => ['data-ref' => 'delivery_note-contact.email']];
             }
 
 
@@ -323,7 +323,7 @@ class Design extends BaseDesign
          foreach ($variables as $variable) {
             $elements[] = ['element' => 'tr', 'elements' => [
             ['element' => 'th', 'content' => $variable . '_label'. ' :', 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1) . '_label','style' => 'color:#6D147F; white-space : nowrap;text-align: left; font-weight:normal;vertical-align: top;']],
-            ['element' => 'td', 'content' =>  $variable, 'show_empty' => false, 'properties' => ['data-ref' => 'client_details-' . substr($variable, 1), 'style' => 'font-weight:normal;; vertical-align: top']]
+            ['element' => 'td', 'content' =>  $variable, 'show_empty' => false, 'properties' => ['data-ref' => 'client_details-' . substr($variable, 1), 'style' => 'font-weight:normal; vertical-align: top;text-align: left;']]
 
          ]];
 
@@ -444,11 +444,28 @@ class Design extends BaseDesign
         $elements = [];
 
         // We don't want to show account balance or invoice total on PDF.. or any amount with currency.
-        if ($this->type == self::DELIVERY_NOTE) {
-            $variables = array_filter($variables, function ($m) {
-                return !in_array($m, ['$invoice.balance_due', '$invoice.total']);
-            });
-        }
+/*         if ($this->type == self::DELIVERY_NOTE) {
+            $variables = $this->context['pdf_variables']['dilevry_details'];
+        }else
+ */
+
+
+ if ($this->type == self::DELIVERY_NOTE) {
+    foreach ($variables as $variable) {
+
+    $elements[] = ['element' => 'tr', 'properties' => ['hidden' => $this->entityVariableCheck($variable)], 'elements' => [
+        ['element' => 'td', 'content' => ctrans('texts.delivery_note') . ':'  , 'properties' => ['data-ref' => 'delivery_note-label','style' => 'color:#6D147F;white-space : nowrap;']],
+        ['element' => 'td', 'content' => $variable, 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1),'style' => 'font-weight:normal; padding-left:5px']],
+    ]];
+
+
+    if (!is_null($this->context['contact'])) {
+        // $elements[] = ['element' => 'p', 'content' => $this->context['contact']->email, 'show_empty' => false, 'properties' => ['data-ref' => 'delivery_note-contact.email']];
+    }
+    }
+    return $elements;
+    // echo $variable . '_label';
+}
 
          foreach ($variables as $variable) {
             $_variable = explode('.', $variable)[1];
@@ -457,11 +474,12 @@ class Design extends BaseDesign
             $var = str_replace("custom", "custom_value", $_variable);
 
                 $elements[] = ['element' => 'tr', 'properties' => ['hidden' => $this->entityVariableCheck($variable)], 'elements' => [
-                    ['element' => 'th', 'content' => $variable . '_label', 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1) . '_label','style' => 'color:#6D147F;white-space : nowrap;']],
+                    ['element' => 'td', 'content' => $variable . '_label', 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1) . '_label','style' => 'color:#6D147F;white-space : nowrap;']],
                     ['element' => 'td', 'content' => $variable, 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1),'style' => 'font-weight:normal']],
                 ]];
 
         }
+
 
         return $elements;
     }
@@ -511,11 +529,11 @@ class Design extends BaseDesign
         $elements = [];
 
         // We don't want to show account balance or invoice total on PDF.. or any amount with currency.
-        if ($this->type == self::DELIVERY_NOTE) {
-            $variables = array_filter($variables, function ($m) {
-                return !in_array($m, ['$invoice.balance_due', '$invoice.total']);
-            });
-        }
+        // if ($this->type == self::DELIVERY_NOTE) {
+        //     $variables = array_filter($variables, function ($m) {
+        //         return !in_array($m, ['$invoice.balance_due', '$invoice.total']);
+        //     });
+        // }
 
         foreach ($variables as $variable) {
             $_variable = explode('.', $variable)[1];
@@ -526,13 +544,21 @@ class Design extends BaseDesign
 
             if (in_array($_variable, $_customs) && !empty($this->entity->{$var})) {
                 $elements[] = ['element' => 'tr', 'elements' => [
-                    ['element' => 'td', 'content' => $variable . '_label', 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1) . '_label','style' => 'padding-left:20px;color:#6D147F;white-space : nowrap;padding-top:100px; vertical-align: top']],
-                    ['element' => 'td', 'content' => $variable, 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1),'style'=> 'padding-left:10px; padding-top:100px;max-width: 730px;; vertical-align: top']],
+                    ['element' => 'td', 'content' => $variable . '_label', 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1) . '_label','style' => 'padding-left:16px;color:#6D147F;white-space : nowrap; vertical-align: top']],
+                    ['element' => 'td', 'content' => $variable, 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1),'style'=> 'padding-left:10px;max-width: 730px;; vertical-align: top']],
                 ]];
+            }
+            if ($this->type == self::DELIVERY_NOTE) {
+                if (in_array($_variable, $_customs) && !empty($this->entity->{$var})) {
+                    $elements[] = ['element' => 'tr', 'elements' => [
+                        ['element' => 'td', 'content' => 'Le présent bon de livraison confirme la réception en bonne et due forme des éléments mentionnés ci-dessous.','properties' => ['style'=> 'white-space:nowrap; padding-top:50px; padding-left:20px;','colspan'=> 2]],
+                    ]];
+                }
             }
         }
 
         return $elements;
+
     }
 
 
@@ -544,8 +570,8 @@ class Design extends BaseDesign
         }
 
         $thead = [
-            ['element' => 'th', 'content' => '$item_label', 'properties' => ['data-ref' => 'delivery_note-item_label']],
-            ['element' => 'th', 'content' => '$description_label', 'properties' => ['data-ref' => 'delivery_note-description_label']],
+            // ['element' => 'th', 'content' => '$item_label', 'properties' => ['data-ref' => 'delivery_note-item_label']],
+            ['element' => 'th', 'content' => 'Désignation', 'properties' => ['data-ref' => 'delivery_note-description_label']],
             ['element' => 'th', 'content' => '$product.quantity_label', 'properties' => ['data-ref' => 'delivery_note-product.quantity_label']],
         ];
 
@@ -832,17 +858,17 @@ class Design extends BaseDesign
             if (array_key_exists($column, $aliases)) {
                 $elements[] = ['element' => 'th', 'content' => $aliases[$column] . '_label', 'properties' => ['data-ref' => "{$type}_table-" . substr($aliases[$column], 1) . '-th', 'hidden' => $this->settings_object->getSetting('hide_empty_columns_on_pdf')]];
             } elseif ($column == '$product.discount' && !$this->company->enable_product_discount) {
-                $elements[] = ['element' => 'th', 'content' => $column . '_label', 'properties' => ['data-ref' => "{$type}_table-" . substr($column, 1) . '-th', 'style' => 'display: none;']];
+                $elements[] = ['element' => 'th', 'content' => $column . '_label', 'properties' => ['data-ref' => "{$type}_table-" . substr($column, 1) . '-th', 'style' => 'display: none;text-align: center;']];
             } elseif ($column == '$product.quantity' && !$this->company->enable_product_quantity) {
-                $elements[] = ['element' => 'th', 'content' => $column . '_label', 'properties' => ['data-ref' => "{$type}_table-" . substr($column, 1) . '-th', 'style' => 'display: none;']];
+                $elements[] = ['element' => 'th', 'content' => $column . '_label', 'properties' => ['data-ref' => "{$type}_table-" . substr($column, 1) . '-th', 'style' => 'display: none;text-align: center;']];
             } elseif ($column == '$product.tax_rate1') {
-                $elements[] = ['element' => 'th', 'content' => $column . '_label', 'properties' => ['data-ref' => "{$type}_table-product.tax1-th", 'hidden' => $this->settings_object->getSetting('hide_empty_columns_on_pdf')]];
+                $elements[] = ['element' => 'th', 'content' => $column . '_label', 'properties' => ['data-ref' => "{$type}_table-product.tax1-th",'style'=>'text-align: center;', 'hidden' => $this->settings_object->getSetting('hide_empty_columns_on_pdf')]];
             } elseif ($column == '$product.tax_rate2') {
-                $elements[] = ['element' => 'th', 'content' => $column . '_label', 'properties' => ['data-ref' => "{$type}_table-product.tax2-th", 'hidden' => $this->settings_object->getSetting('hide_empty_columns_on_pdf')]];
+                $elements[] = ['element' => 'th', 'content' => $column . '_label', 'properties' => ['data-ref' => "{$type}_table-product.tax2-th",'style'=>'text-align: center;', 'hidden' => $this->settings_object->getSetting('hide_empty_columns_on_pdf')]];
             } elseif ($column == '$product.tax_rate3') {
-                $elements[] = ['element' => 'th', 'content' => $column . '_label', 'properties' => ['data-ref' => "{$type}_table-product.tax3-th", 'hidden' => $this->settings_object->getSetting('hide_empty_columns_on_pdf')]];
+                $elements[] = ['element' => 'th', 'content' => $column . '_label', 'properties' => ['data-ref' => "{$type}_table-product.tax3-th",'style'=>'text-align: center;', 'hidden' => $this->settings_object->getSetting('hide_empty_columns_on_pdf')]];
             } else {
-                $elements[] = ['element' => 'th', 'content' => $column . '_label', 'properties' => ['data-ref' => "{$type}_table-" . substr($column, 1) . '-th', 'hidden' => $this->settings_object->getSetting('hide_empty_columns_on_pdf')]];
+                $elements[] = ['element' => 'th', 'content' => $column . '_label', 'properties' => ['data-ref' => "{$type}_table-" . substr($column, 1) . '-th','style'=>'text-align: center;', 'hidden' => $this->settings_object->getSetting('hide_empty_columns_on_pdf')]];
             }
         }
 
@@ -1393,11 +1419,13 @@ class Design extends BaseDesign
     $variables = $this->context['pdf_variables']['total_columns'];
 
     $elements[] = ['element' => 'tr', 'elements' => [
-        ['element' => 'span',
-        'content' => strtr(str_replace("labels", "", $_variables['values']['$entity.terms']), $_variables['labels']),
-        'properties' => ['data-ref' => 'total_table-terms', 'style' => 'text-align: left;']]
-
+        ['element' => 'span','content' => strtr(str_replace("labels", "", $_variables['values']['$entity.terms']), $_variables['labels']),'properties' => ['data-ref' => 'total_table-terms', 'style' => 'text-align: left;']]
     ]];
+    if ($this->type == self::DELIVERY_NOTE) {
+            $elements[] = ['element' => 'div', 'elements' => [
+                ['element' => 'p', 'content' => 'En votre aimable réception <span style="padding-left:380px"> Cachet et signature à la réception</span>','properties' => ['style'=> '']],
+            ]];
+    }
         return $elements;
     }
 }
