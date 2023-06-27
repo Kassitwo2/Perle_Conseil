@@ -441,6 +441,7 @@
         font-family: $font_name, Helvetica, sans-serif;
         font-size: $font_size !important;
         zoom: 80%;
+        font-family: 'Century Gothic', sans-serif !important;
     }
 
 
@@ -455,6 +456,7 @@
         padding-top: 1rem;
         padding-left: 4rem;
         padding-right: 4rem;
+        font-family: 'Century Gothic', sans-serif !important;
     }
 
     @page {
@@ -559,7 +561,7 @@
     }
 
     [data-ref="table"]>thead {
-        text-align: left;
+        text-align: center;
     }
 
     [data-ref="table"]>thead>tr>th {
@@ -568,7 +570,7 @@
     }
 
     [data-ref="table"]>thead>tr>th:last-child {
-        text-align: right;
+        text-align: center;
     }
 
     [data-ref="table"]>tbody>tr>td {
@@ -577,7 +579,7 @@
     }
 
     [data-ref="table"]>tbody>tr>td:last-child {
-        text-align: right;
+        text-align: center;
     }
 
     /*     [data-ref="table"] > tbody > tr:nth-child(even) {
@@ -744,7 +746,7 @@
 
 
     [data-ref="table"]>thead {
-        text-align: left;
+        text-align: center;
     }
 
     [data-ref="table"]>thead>tr>th {
@@ -773,11 +775,7 @@
 
     }
 
-    .product-table>thead>tr>th:last-child,
-    .product-table>tbody>tr>td:last-child {
-        text-align: right;
-    }
-
+ 
     .product-table>thead>tr>th:first-child {
         background-color: #18D6CD;
     }
@@ -839,6 +837,27 @@
         margin-top: 40px;
     }
 
+    /** delivery table style **/
+
+    .delivery-note-table>tbody>tr>td {
+        border: 0.25px solid #000000;
+        padding: 1rem 1rem;
+    }
+    .delivery-note-table>tbody>tr>td:first-child {
+        color: var(--primary-color);
+
+    }
+
+    .delivery-note-table>thead>tr>th:first-child {
+        background-color: #18D6CD;
+    }
+    .delivery-note-table>thead>tr>th {
+        background-color: #6D147F;
+
+    }
+    .delivery-note-table>thead>tr>th:last-child {
+        padding-right: 1rem;
+    }
     /** Useful snippets, uncomment to enable. **/
 
     /** Hide company logo **/
@@ -903,7 +922,7 @@
 
                         <table id="product-table" class="product-table" cellspacing="0" data-ref="table"></table>
                         <table id="task-table" cellspacing="0" data-ref="table"></table>
-                        <table id="delivery-note-table" cellspacing="0" data-ref="table"></table>
+                        <table id="delivery-note-table" class="delivery-note-table" cellspacing="0" data-ref="table"></table>
                         <table id="statement-invoice-table" cellspacing="0" data-ref="table"></table>
                         <div id="statement-invoice-table-totals" data-ref="statement-totals"></div>
                         <table id="statement-payment-table" cellspacing="0" data-ref="table"></table>
@@ -923,7 +942,7 @@
 
             </tr>
             <tr>
-                <td style="padding-top: 30px;">
+                <td style="">
                     <table id="footer_1" data-ref="footer_1" ></table>
                 </td>
 
@@ -983,29 +1002,59 @@ $entity_images
             });
         });
     </script>
-    <script>
-        let productTable = document.querySelector("#product-table tbody");
-        let productRows = productTable.querySelectorAll("tr");
 
-        // loop through each product row
-        productRows.forEach(function (row) {
-            let itemColumn = row.querySelector("td[data-ref='product_table-product.item-td']");
-            let descriptionColumn = row.querySelector("td[data-ref='product_table-product.description-td']");
 
-            // merge the content of item and description columns
-            itemColumn.innerHTML = "<p><b>" + itemColumn.textContent + "</b><p/>";
-            itemColumn.innerHTML += descriptionColumn.textContent;
-            //itemColumn.innerHTML = "<br><strong>" + itemColumn.innerHTML + "</strong>"+"<br>"+descriptionColumn.innerHTML;
+<script>
 
-            //"<br><b>" += itemColumn.innerHTML + "<b><br>" += descriptionColumn.innerHTML + "</b>";
-            // remove the description column
-            descriptionColumn.remove();
-        });
+    let productTable = document.querySelector("#product-table tbody");
+    let productRows = productTable.querySelectorAll("tr");
 
-        // hide the Description header
-        let descriptionHeader = document.querySelector("th[data-ref='product_table-product.description-th']");
-        descriptionHeader.style.display = "none";
-    </script>
+    // loop through each product row
+    productRows.forEach(function (row) {
+        let itemColumn = row.querySelector("td[data-ref='product_table-product.item-td']");
+        let descriptionColumn = row.querySelector("td[data-ref='product_table-product.description-td']");
+
+        // merge the content of item and description columns
+        itemColumn.innerHTML = "<p><b>" + itemColumn.textContent + "</b><p/>";
+        itemColumn.innerHTML += descriptionColumn.textContent;
+        //itemColumn.innerHTML = "<br><strong>" + itemColumn.innerHTML + "</strong>"+"<br>"+descriptionColumn.innerHTML;
+
+        //"<br><b>" += itemColumn.innerHTML + "<b><br>" += descriptionColumn.innerHTML + "</b>";
+        // remove the description column
+        descriptionColumn.remove();
+    });
+
+    // hide the Description header
+    let descriptionHeader = document.querySelector("th[data-ref='product_table-product.description-th']");
+    descriptionHeader.style.display = "none";
+
+</script>
+
+<script>
+    let deliverynoteTable = document.querySelector("#delivery-note-table tbody");
+    let deliverynoteTableRows = deliverynoteTable.querySelectorAll("tr");
+
+    // loop through each product row
+    deliverynoteTableRows.forEach(function (row) {
+        //let itemColumndelivery = row.querySelector("td[data-ref='delivery_note_table.item-td']");
+        let itemColumndelivery = row.cells[0];
+
+        let descriptionColumndelivery = row.cells[1];
+
+        // merge the content of item and description columns
+        itemColumndelivery.innerHTML = "<p><b>" + itemColumndelivery.textContent + "</b><p/>";
+        itemColumndelivery.innerHTML += descriptionColumndelivery.textContent;
+        //itemColumn.innerHTML = "<br><strong>" + itemColumn.innerHTML + "</strong>"+"<br>"+descriptionColumn.innerHTML;
+
+        //"<br><b>" += itemColumn.innerHTML + "<b><br>" += descriptionColumn.innerHTML + "</b>";
+        // remove the description column
+        descriptionColumndelivery.remove();
+    });
+
+    // hide the Description header
+    //let descriptionHeaderdelivery = document.querySelector("th[data-ref='delivery_note_table.description-th']");
+    descriptionHeaderdelivery.style.display = "none";
+</script>
 
 </div>
 

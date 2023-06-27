@@ -309,13 +309,13 @@ class PdfConfiguration
         $symbol = $this->currency->symbol;
 
         if ($this->settings->show_currency_code === true && $this->currency->code == 'CHF') {
-            return "{$code} {$value}";
+            return "{$value}";
         } elseif ($this->settings->show_currency_code === true) {
-            return "{$value} {$code}";
+            return "{$value}";
         } elseif ($swapSymbol) {
-            return "{$value} ".trim($symbol);
+            return "{$value} ";
         } elseif ($this->settings->show_currency_code === false) {
-            return "{$symbol}{$value}";
+            return "{$value}";
         } else {
             $value = floatval($value);
             $thousand = $this->currency->thousand_separator;

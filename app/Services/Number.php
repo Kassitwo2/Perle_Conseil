@@ -173,19 +173,19 @@ class Number
         $symbol = $currency->symbol;
 
         if ($entity->getSetting('show_currency_code') === true && $currency->code == 'CHF') {
-            return "{$code} {$value}";
+            return "{$value}";
         } elseif ($entity->getSetting('show_currency_code') === true) {
-            return "{$value} {$code}";
+            return "{$value}";
         } elseif ($swapSymbol) {
             return "{$value} ".trim($symbol);
         } elseif ($entity->getSetting('show_currency_code') === false) {
             /* Ensures we place the negative symbol ahead of the currency symbol*/
             if ($_value < 0) {
                 $value = substr($value, 1);
-                $symbol = "-{$symbol}";
+                $symbol = "";
             }
 
-            return "{$symbol}{$value}";
+            return "{$value}";
         } else {
             return self::formatValue($value, $currency);
         }
@@ -253,18 +253,18 @@ class Number
         $symbol = $currency->symbol;
 
         if ($entity->getSetting('show_currency_code') === true && $currency->code == 'CHF') {
-            return "{$code} {$value}";
+            return "{$value}";
         } elseif ($entity->getSetting('show_currency_code') === true) {
-            return "{$value} {$code}";
+            return "";
         } elseif ($swapSymbol) {
-            return "{$value} ".trim($symbol);
+            return "{$value} ";
         } elseif ($entity->getSetting('show_currency_code') === false) {
             if ($_value < 0) {
                 $value = substr($value, 1);
-                $symbol = "-{$symbol}";
+                $symbol = "";
             }
 
-            return "{$symbol}{$value}";
+            return "{$value}";
         } else {
             return self::formatValue($value, $currency);
         }
