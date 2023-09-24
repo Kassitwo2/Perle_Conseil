@@ -155,7 +155,7 @@ class HtmlEngine
             $data['$number'] = ['value' => $this->entity->number ?: ' ', 'label' => ctrans('texts.invoice_number')];
             $data['$invoice'] = ['value' => $this->entity->number ?: ' ', 'label' => ctrans('texts.invoice_number')];
             $data['$number_short'] = ['value' => $this->entity->number ?: ' ', 'label' => ctrans('texts.invoice_number_short')];
-            $data['$entity.terms'] = ['value' => 'Arrêtée la présente facture à la somme de : <span>' . Helpers::processReservedKeywords(\nl2br($this->entity->terms.'</span>' ?: ''), $this->client) ?: '', 'label' => ctrans('texts.invoice_terms')];
+            $data['$entity.terms'] = ['value' => 'Arrêtée la présente facture à la somme de : <span>' . Helpers::processReservedKeywords(\nl2br($this->entity->terms . '</span>' ?: ''), $this->client) ?: '', 'label' => ctrans('texts.invoice_terms')];
             $data['$terms'] = &$data['$entity.terms'];
             $data['$view_link'] = ['value' => $this->buildViewButton($this->invitation->getLink(), ctrans('texts.view_invoice')), 'label' => ctrans('texts.view_invoice')];
             $data['$viewLink'] = &$data['$view_link'];
@@ -206,12 +206,12 @@ class HtmlEngine
                 }
             }
         }
-
+       
         if ($this->entity_string == 'quote') {
             $data['$entity'] = ['value' => ctrans('texts.quote'), 'label' => ctrans('texts.quote')];
             $data['$number'] = ['value' => $this->entity->number ?: '', 'label' => ctrans('texts.quote_number')];
             $data['$number_short'] = ['value' => $this->entity->number ?: '', 'label' => ctrans('texts.quote_number_short')];
-            $data['$entity.terms'] = ['value' => '<div style="margin-top:50px">Arrêtée la devis à la somme de : ' . Helpers::processReservedKeywords(\nl2br($this->entity->terms ?: '') . "</div> <div style='margin-top:100px'><span>En votre aimable réception </span><span style='padding-left:400px'>BON POUR ACCORD </span></div> ", $this->client) ?: '', 'label' => ctrans('texts.quote_terms')];
+            $data['$entity.terms'] = ['value' => '<div style="margin-top:50px">Arrêté le présent devis à la somme : ' . Helpers::processReservedKeywords(\nl2br($this->entity->terms ?: '') . "</div> <div style='margin-top:100px'><span>En votre aimable réception </span><span style='padding-left:400px'>BON POUR ACCORD </span></div> ", $this->client) ?: '', 'label' => ctrans('texts.quote_terms')];
             $data['$terms'] = &$data['$entity.terms'];
             $data['$view_link'] = ['value' => $this->buildViewButton($this->invitation->getLink(), ctrans('texts.view_quote')), 'label' => ctrans('texts.view_quote')];
             $data['$viewLink'] = &$data['$view_link'];
@@ -262,7 +262,7 @@ class HtmlEngine
             $data['$view_button'] = &$data['$view_link'];
             $data['$viewLink'] = &$data['$view_link'];
             $data['$view_url'] = ['value' => $this->invitation->getLink(), 'label' => ctrans('texts.view_credit')];
-            // $data['$view_link']          = ['value' => $this->invitation->getLink(), 'label' => ctrans('texts.view_credit')];
+            // $data['$view_link']= ['value' => $this->invitation->getLink(), 'label' => ctrans('texts.view_credit')];
             $data['$date'] = ['value' => $this->translateDate($this->entity->date, $this->client->date_format(), $this->client->locale()) ?: ' ', 'label' => ctrans('texts.credit_date')];
 
             $data['$credit.custom1'] = ['value' => $this->helpers->formatCustomFieldValue($this->company->custom_fields, 'credit1', $this->entity->custom_value1, $this->client) ?: ' ', 'label' => $this->helpers->makeCustomField($this->company->custom_fields, 'invoice1')];

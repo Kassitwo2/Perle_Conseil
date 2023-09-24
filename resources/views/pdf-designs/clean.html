@@ -373,8 +373,9 @@
 
     .project-header {
         font-size: 1.2em;
-        margin-top: 0.1em;
-        margin-bottom: 0;
+        margin-top: 0.0.25px;
+        margi
+        border-width: 0.25px;n-bottom: 0;
         padding-bottom: 0;
         margin-left: 0;
         margin-right: 0;
@@ -438,10 +439,10 @@
     body {
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
-        font-family: $font_name, Helvetica, sans-serif;
-        font-size: $font_size !important;
+/*         font-family: $font_name, Helvetica, sans-serif;
+ */        font-size: $font_size !important;
         zoom: 80%;
-        font-family: 'Century Gothic', sans-serif !important;
+        font-family: 'Century Gothic', sans-serif;
     }
 
 
@@ -456,7 +457,7 @@
         padding-top: 1rem;
         padding-left: 4rem;
         padding-right: 4rem;
-        font-family: 'Century Gothic', sans-serif !important;
+        font-family: 'Century Gothic', sans-serif ;
     }
 
     @page {
@@ -532,6 +533,7 @@
         line-height: var(--line-height) !important;
     }
 
+
     #client-details {
         width: 570px;
         line-height: var(--line-height);
@@ -592,7 +594,10 @@
         padding-bottom: 1.5rem;
         padding-top: 1.5rem;
         padding-left: 1rem;
-        border: 0.5px solid #000000;
+        /* border: 0.25px solid #000000; */
+        border-width: 0.25px;
+        border-collapse: collapse;
+
         color: #000000;
 
     }
@@ -603,8 +608,16 @@
     }
 
     #table-totals>tbody>tr>td {
-        border: 0.25px solid #000000;
+        /* border: 0.25px solid #000000; */
+        border-width: 0.25px;
+        border-collapse: collapse;
         padding: 1rem 1rem;
+    }
+
+    #table-totals>tbody>tr>td {
+  border:0.25px solid black;
+ 
+ border-width: 0.25px; border-collapse: collapse;
     }
 
     #table-totals {
@@ -722,8 +735,8 @@
 
     .project-header {
         font-size: 1.2em;
-        margin-top: 0.1em;
-        margin-bottom: 0;
+        margin-top: 0.0.25px;
+        border-width: 0.25px;n-bottom: 0;
         padding-bottom: 0;
         margin-left: 0;
         margin-right: 0;
@@ -731,7 +744,9 @@
         color: #505050;
     }
 
-    .pqrcode {}
+    .pqrcode {
+
+    }
 
 
 
@@ -750,18 +765,19 @@
     }
 
     [data-ref="table"]>thead>tr>th {
-        font-size: 1.1rem;
+/*         font-size: 1.1rem;
+ */        
+        font-weight: normal;
         padding-bottom: 1.5rem;
         padding-top: 1.5rem;
         padding-left: 1rem;
-        border: 0.5px solid #000000;
+/*         border: 0.25px solid #000000;*/
+        border-width: 0.25px;
+        border-collapse: collapse;
         color: #FFF;
     }
 
-    .product-table>tbody>tr>td {
-        border: 0.25px solid #000000;
-        padding: 1rem 1rem;
-    }
+
 
     [data-element='product_table-product.description-td'],
     td {
@@ -790,7 +806,7 @@
     }
 
     .product-table>tbody>tr:nth-child(odd) {
-        /*         background-color: #f5f5f5;*/
+        /* background-color: #f5f5f5;*/
     }
 
     #table-totals>thead>tr>th {
@@ -799,7 +815,8 @@
         padding-bottom: 1.5rem;
         padding-top: 1.5rem;
         padding-left: 1rem;
-        border: 0.5px solid #000000;
+/*      border: 0.25px solid #000000;
+ */     border-width: 0.25px;
         color: #000000;
     }
 
@@ -809,7 +826,9 @@
     }
 
     #table-totals>tbody>tr>td {
-        border: 0.25px solid #000000;
+/*         border: 0.25px solid #000000;
+ */        border-width: 0.25px;    
+            
         padding: 1rem 1rem;
     }
 
@@ -840,12 +859,17 @@
     /** delivery table style **/
 
     .delivery-note-table>tbody>tr>td {
-        border: 0.25px solid #000000;
+/*         border: 0.25px solid #000000;
+ */      /*   border-width: 0.25px; */
         padding: 1rem 1rem;
     }
     .delivery-note-table>tbody>tr>td:first-child {
         color: var(--primary-color);
+    }
 
+    .delivery-note-table>tbody>tr>td:nth-last-child(2) {
+        
+        text-align: center;
     }
 
     .delivery-note-table>thead>tr>th:first-child {
@@ -858,6 +882,60 @@
     .delivery-note-table>thead>tr>th:last-child {
         padding-right: 1rem;
     }
+
+/*     #product-table,tr,td  {
+        border:1px solid black;
+        border-collapse: collapse;
+    } */
+
+    #product-table {
+    border-collapse: collapse;
+    border: 1px solid black;
+    }
+
+
+
+
+
+
+
+
+
+
+
+    #product-table th, #product-table td {
+    border: 1px solid black;
+    padding: 8px;
+    }
+
+    #table-totals {
+    border-collapse: collapse;
+    border: 1px solid black;
+    }
+
+    #table-totals th, #table-totals td {
+    border: 1px solid black;
+    padding: 8px;
+    }
+
+
+
+    #product-table td:not(:first-child){
+        text-align: center;
+
+    }
+
+
+    #table-totals td{
+        text-align: center;
+    }
+
+/*     .product-table>tbody>tr>td {
+        padding: 1rem 1rem;
+        border: 0.25px solid black;
+        border-width: 0.25px;       
+        border-collapse: collapse;
+    } */
     /** Useful snippets, uncomment to enable. **/
 
     /** Hide company logo **/
@@ -918,12 +996,12 @@
                             <table style="padding-left: 180px;" id="vendor-details"></table>
                             <div style="margin-left: 180px;" id="shipping-details"></div>
                         </div>
-                        <table id="entityDetails_objet"  cellspacing="0" cellpadding="0" dir="$dir"></table>
+                        <table style="margin: auto;" id="entityDetails_objet"  cellspacing="0" cellpadding="0" dir="$dir"></table>
                         <table id="deliveryNote_top"  cellspacing="0" cellpadding="0" dir="$dir"></table>
 
                         <table id="product-table" class="product-table" cellspacing="0" data-ref="table"></table>
                         <table id="task-table" cellspacing="0" data-ref="table"></table>
-                        <table id="delivery-note-table" class="delivery-note-table" cellspacing="0" data-ref="table"></table>
+                        <table border="2" style="border-collapse:collapse; border-color: black;" id="delivery-note-table" class="delivery-note-table" cellspacing="0" data-ref="table"></table>
                         <table id="statement-invoice-table" cellspacing="0" data-ref="table"></table>
                         <div id="statement-invoice-table-totals" data-ref="statement-totals"></div>
                         <table id="statement-payment-table" cellspacing="0" data-ref="table"></table>
@@ -984,6 +1062,62 @@ $entity_images
         CB: Banque Populaire Rabat -Kenitra - Agence : OMAR IBN ELKHATTAB Compte N°: 1818102121196807910001 38
 
     </p>
+
+    <script language="javascript">
+        var productPrixUntHts = document.querySelectorAll("#product-table td:nth-child(4)");
+        [].forEach.call(productPrixUntHts, function (productPrixUntHt) {
+            var originalContent = productPrixUntHt.textContent;
+            var convertedContent = originalContent.toString().replace(/,/g, " ").replace(/\./g, ",");
+            productPrixUntHt.innerHTML = convertedContent;
+        });
+    </script>
+
+    <script language="javascript">
+        var productPrixUntHts = document.querySelectorAll("#product-table td:nth-child(5)");
+        [].forEach.call(productPrixUntHts, function (productPrixUntHt) {
+            var originalContent = productPrixUntHt.textContent;
+            var convertedContent = originalContent.toString().replace(/,/g, " ").replace(/\./g, ",");
+            productPrixUntHt.innerHTML = convertedContent;
+        });
+    </script>
+    
+    <script language="javascript">
+        var productPrixUntHts = document.querySelectorAll("#product-table td:last-child");
+        [].forEach.call(productPrixUntHts, function (productPrixUntHt) {
+            var originalContent = productPrixUntHt.textContent;
+            var convertedContent = originalContent.toString().replace(/,/g, " ").replace(/\./g, ",");
+            productPrixUntHt.innerHTML = convertedContent;
+        });
+    </script>
+
+
+<script language="javascript">
+    var productPrixUntHts = document.querySelectorAll("#table-totals td:nth-child(1)");
+    [].forEach.call(productPrixUntHts, function (productPrixUntHt) {
+        var originalContent = productPrixUntHt.textContent;
+        var convertedContent = originalContent.toString().replace(/,/g, " ").replace(/\./g, ",");
+        productPrixUntHt.innerHTML = convertedContent;
+    });
+</script>
+
+
+<script language="javascript">
+    var productPrixUntHts = document.querySelectorAll("#table-totals td:nth-child(2)");
+    [].forEach.call(productPrixUntHts, function (productPrixUntHt) {
+        var originalContent = productPrixUntHt.textContent;
+        var convertedContent = originalContent.toString().replace(/,/g, " ").replace(/\./g, ",");
+        productPrixUntHt.innerHTML = convertedContent;
+    });
+</script>
+    <script language="javascript">
+        var productPrixUntHts = document.querySelectorAll("#table-totals td:last-child");
+        [].forEach.call(productPrixUntHts, function (productPrixUntHt) {
+            var originalContent = productPrixUntHt.textContent;
+            var convertedContent = originalContent.toString().replace(/,/g, " ").replace(/\./g, ",");
+            productPrixUntHt.innerHTML = convertedContent;
+        });
+    </script>
+
     <script>
         // Clear up space a bit, if [product-table, tasks-table, delivery-note-table] isn't present.
         document.addEventListener('DOMContentLoaded', () => {
@@ -1030,6 +1164,19 @@ $entity_images
     descriptionHeader.style.display = "none";
 
 </script>
+
+
+
+
+<!-- <script language="javascript">
+    var productPrixUntHts = document.querySelectorAll("#product-table td:nth-child(2)");
+    [].forEach.call(productPrixUntHts, function(productPrixUntHt) {
+      productPrixUntHt.innerHTML = parseFloat(productPrixUntHt.innerHTML).toString().replace(/,/g, "").replace(".", ",");;
+    });
+</script> -->
+
+
+  
 
 <script>
     let deliverynoteTable = document.querySelector("#delivery-note-table tbody");
@@ -1084,5 +1231,4 @@ $entity_images
             });
         </script>
     </div>
-</div>
- -->
+</div> -->

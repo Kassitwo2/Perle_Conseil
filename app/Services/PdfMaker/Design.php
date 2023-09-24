@@ -301,7 +301,7 @@ class Design extends BaseDesign
             return $elements;
         }
 
-        if ($this->type == self::DELIVERY_NOTE) {
+/*         if ($this->type == self::DELIVERY_NOTE) {
             $elements = [
                 ['element' => 'p', 'content' => '', 'properties' => ['data-ref' => 'delivery_note-label', 'style' => 'font-weight: bold; text-transform: uppercase']],
                 ['element' => 'p', 'content' => '<span style="color:#6D147F; padding-right:4px; line-height:1.6">Client: </span> '. $this->client->name, 'show_empty' => false, 'properties' => ['data-ref' => 'delivery_note-client.name']],
@@ -321,19 +321,35 @@ class Design extends BaseDesign
 
 
             return $elements;
-        }
+        } */
 
         $variables = $this->context['pdf_variables']['client_details'];
 
-         foreach ($variables as $variable) {
-            $elements[] = ['element' => 'tr', 'elements' => [
-            ['element' => 'th', 'content' => $variable . '_label'. ' :', 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1) . '_label','style' => 'color:#6D147F; white-space : nowrap;text-align: left; font-weight:normal;vertical-align: top;']],
-            ['element' => 'td', 'content' =>  $variable, 'show_empty' => false, 'properties' => ['data-ref' => 'client_details-' . substr($variable, 1), 'style' => 'font-weight:normal; vertical-align: top;text-align: left;']]
-
-         ]];
-
-
+        if ($this->entity instanceof Quote) {
+                $elements[] = ['element' => 'tr', 'elements' => [
+                    ['element' => 'th', 'content' =>'Client' . ' :', 'properties' => ['data-ref' => 'entity_details-' . substr($this->client->name, 1) . '_label', 'style' => 'color:#6D147F; white-space : nowrap;text-align: left; font-weight:normal;vertical-align: top;']],
+                    ['element' => 'td', 'content' =>  $this->client->name, 'show_empty' => false, 'properties' => ['data-ref' => 'client_details-' . substr($this->client->name, 1), 'style' => 'font-weight:normal; vertical-align: top;text-align: left;']]
+    
+                ]];
+    
+        }elseif ($this->type == self::DELIVERY_NOTE){
+            foreach ($variables as $variable) {
+                $elements[] = ['element' => 'tr', 'elements' => [
+                    ['element' => 'th', 'content' => $variable . '_label' . ' :', 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1) . '_label', 'style' => 'color:#6D147F; white-space : nowrap;text-align: left; font-weight:normal;vertical-align: top;']],
+                    ['element' => 'td', 'content' =>  $variable, 'show_empty' => false, 'properties' => ['data-ref' => 'client_details-' . substr($variable, 1), 'style' => 'font-weight:normal; vertical-align: top;text-align: left;']]
+    
+                ]];
             }
+        }else{
+            foreach ($variables as $variable) {
+                $elements[] = ['element' => 'tr', 'elements' => [
+                    ['element' => 'th', 'content' => $variable . '_label' . ' :', 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1) . '_label', 'style' => 'color:#6D147F; white-space : nowrap;text-align: left; font-weight:normal;vertical-align: top;']],
+                    ['element' => 'td', 'content' =>  $variable, 'show_empty' => false, 'properties' => ['data-ref' => 'client_details-' . substr($variable, 1), 'style' => 'font-weight:normal; vertical-align: top;text-align: left;']]
+    
+                ]];
+            }
+        }
+
 
 
         return $elements;
@@ -418,7 +434,7 @@ class Design extends BaseDesign
                     ['element' => 'th', 'properties' => ['style' => 'color:#6D147F;white-space : nowrap;'], 'content' => "<h2>".ctrans('texts.statement')."</h2>"],
                 ]],
                 ['element' => 'tr', 'properties' => [], 'elements' => [
-                    ['element' => 'th', 'properties' => ['style' => 'color:#6D147F;white-space : nowrap;'], 'content' => ctrans('texts.statement_date')],
+                    ['element' => 'th', 'properties' => ['style' => 'color:#6D147F;white-space : nowrap;padding-left:10px;margin-left:10px;margin-right:15px'], 'content' => ctrans('texts.statement_date')],
                     ['element' => 'th', 'properties' => [], 'content' => $s_date ?? ''],
                 ]],
                 ['element' => 'tr', 'properties' => [], 'elements' => [
@@ -455,22 +471,48 @@ class Design extends BaseDesign
  */
 
 
- if ($this->type == self::DELIVERY_NOTE) {
-    foreach ($variables as $variable) {
+        if ($this->type == self::DELIVERY_NOTE) {
+            
+            $counter = 0;
 
-    $elements[] = ['element' => 'tr', 'properties' => ['hidden' => $this->entityVariableCheck($variable)], 'elements' => [
-        ['element' => 'td', 'content' => ctrans('texts.delivery_note') . ':'  , 'properties' => ['data-ref' => 'delivery_note-label','style' => 'color:#6D147F;white-space : nowrap;']],
-        ['element' => 'td', 'content' => $variable, 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1),'style' => 'font-weight:normal; padding-left:5px']],
-    ]];
+            foreach ($variables as $variable) {
 
 
-    if (!is_null($this->context['contact'])) {
-        // $elements[] = ['element' => 'p', 'content' => $this->context['contact']->email, 'show_empty' => false, 'properties' => ['data-ref' => 'delivery_note-contact.email']];
-    }
-    }
-    return $elements;
-    // echo $variable . '_label';
-}
+                if ($counter === 0) {
+                    $elements[] = ['element' => 'tr', 'properties' => ['hidden' => $this->entityVariableCheck($variable)], 'elements' => [
+                
+                
+                        ['element' => 'td', 'content' => ctrans('texts.delivery_note') . ': '  , 'properties' => ['data-ref' => 'delivery_note-label','style' => 'color:#6D147F;white-space : nowrap;']],
+                    
+                        //['element' => 'td', 'content' => $variable . '_label', 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1) . '_label','style' => 'color:#6D147F;white-space : nowrap;']],
+                
+                        ['element' => 'td', 'content' => $variable, 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1),'style' => 'font-weight:normal; padding-left:5px']],
+                    ]];
+                }
+                if ($counter === 1){
+                    $elements[] = ['element' => 'tr', 'properties' => ['hidden' => $this->entityVariableCheck($variable)], 'elements' => [
+                
+                
+                        ['element' => 'td', 'content' => 'Date' . ': '  , 'properties' => ['data-ref' => 'delivery_note-label','style' => 'color:#6D147F;white-space : nowrap;padding-left:10px;']],
+                    
+                        //['element' => 'td', 'content' => $variable . '_label', 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1) . '_label','style' => 'color:#6D147F;white-space : nowrap;']],
+                
+                        ['element' => 'td', 'content' => ': '. $variable, 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1),'style' => 'font-weight:normal;']],
+                    ]];
+                }
+
+
+
+
+            $counter++;
+
+            if (!is_null($this->context['contact'])) {
+                // $elements[] = ['element' => 'p', 'content' => $this->context['contact']->email, 'show_empty' => false, 'properties' => ['data-ref' => 'delivery_note-contact.email']];
+            }
+            }
+            return $elements;
+            // echo $variable . '_label';
+        }
 
          foreach ($variables as $variable) {
             $_variable = explode('.', $variable)[1];
@@ -479,8 +521,8 @@ class Design extends BaseDesign
             $var = str_replace("custom", "custom_value", $_variable);
 
                 $elements[] = ['element' => 'tr', 'properties' => ['hidden' => $this->entityVariableCheck($variable)], 'elements' => [
-                    ['element' => 'td', 'content' => $variable . '_label', 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1) . '_label','style' => 'color:#6D147F;white-space : nowrap;']],
-                    ['element' => 'td', 'content' => $variable, 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1),'style' => 'white-space : nowrap;font-weight:normal']],
+                    ['element' => 'td', 'content' => $variable . '_label', 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1) . '_label','style' => 'color:#6D147F;white-space : nowrap;padding-left:10px;']],
+                    ['element' => 'td', 'content' => $variable, 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1),'style' => 'white-space : nowrap;font-weight:normal;padding-left:10px;']],
                 ]];
 
         }
@@ -509,8 +551,7 @@ class Design extends BaseDesign
                 ['element' => 'tr', 'properties' => [], 'elements' => [
                     ['element' => 'th', 'properties' => ['style' => 'color:#6D147F;white-space : nowrap;'], 'content' => '$balance_due_label'],
                     ['element' => 'th', 'properties' => [], 'content' => Number::formatMoney($this->invoices->sum('balance'), $this->client)],
-                ]],
-            ];
+                ]],         ];
         } */
 
         $variables = $this->context['pdf_variables']['invoice_details'];
@@ -548,9 +589,9 @@ class Design extends BaseDesign
             $var = str_replace("custom", "custom_value", $_variable);
 
             if (in_array($_variable, $_customs) && !empty($this->entity->{$var})) {
-                $elements[] = ['element' => 'tr', 'elements' => [
-                    ['element' => 'td', 'content' => $variable . '_label', 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1) . '_label','style' => 'padding-left:16px;color:#6D147F;white-space : nowrap; vertical-align: top']],
-                    ['element' => 'td', 'content' => $variable, 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1),'style'=> 'padding-left:10px;max-width: 730px;; vertical-align: top']],
+                $elements[] = ['element' => 'tr','properties' => ['style' => ''], 'elements' => [
+                    ['element' => 'td', 'content' => $variable . '_label', 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1) . '_label','style' => 'text-align: center;padding-left:16px;color:#6D147F;white-space : nowrap; vertical-align: top;margin-left:10px;margin-right:15px']],
+                    ['element' => 'td', 'content' => $variable, 'properties' => ['data-ref' => 'entity_details-' . substr($variable, 1),'style'=> 'text-align: center;padding-left:10px;max-width: 730px;font-weight:bold; vertical-align: top']],
                 ]];
             }
             // if ($this->type == self::DELIVERY_NOTE) {
@@ -616,6 +657,7 @@ class Design extends BaseDesign
         return $elements;
 
     }
+
 
 
 
@@ -915,9 +957,9 @@ class Design extends BaseDesign
             if (array_key_exists($column, $aliases)) {
                 $elements[] = ['element' => 'th', 'content' => $aliases[$column] . '_label', 'properties' => ['data-ref' => "{$type}_table-" . substr($aliases[$column], 1) . '-th', 'hidden' => $this->settings_object->getSetting('hide_empty_columns_on_pdf')]];
             } elseif ($column == '$product.discount' && !$this->company->enable_product_discount) {
-                $elements[] = ['element' => 'th', 'content' => $column . '_label', 'properties' => ['data-ref' => "{$type}_table-" . substr($column, 1) . '-th', 'style' => 'display: none;text-align: center;']];
+                $elements[] = ['element' => 'th', 'content' => $column . '_label', 'properties' => ['data-ref' => "{$type}_table-" . substr($column, 1) . '-th', 'style' => 'display: none;text-align: center;border: 0.25px solid #000000;']];
             } elseif ($column == '$product.quantity' && !$this->company->enable_product_quantity) {
-                $elements[] = ['element' => 'th', 'content' => $column . '_label', 'properties' => ['data-ref' => "{$type}_table-" . substr($column, 1) . '-th', 'style' => 'display: none;text-align: center;']];
+                $elements[] = ['element' => 'th', 'content' => $column . '_label', 'properties' => ['data-ref' => "{$type}_table-" . substr($column, 1) . '-th', 'style' => 'display: none;text-align: center;border: 0.25px solid #000000;']];
             } elseif ($column == '$product.tax_rate1') {
                 $elements[] = ['element' => 'th', 'content' => $column . '_label', 'properties' => ['data-ref' => "{$type}_table-product.tax1-th",'style'=>'text-align: center;', 'hidden' => $this->settings_object->getSetting('hide_empty_columns_on_pdf')]];
             } elseif ($column == '$product.tax_rate2') {
@@ -1064,6 +1106,7 @@ class Design extends BaseDesign
                 ]],
             ];
         }
+
 
         $_variables = array_key_exists('variables', $this->context)
             ? $this->context['variables']
@@ -1475,12 +1518,14 @@ class Design extends BaseDesign
 
     $variables = $this->context['pdf_variables']['total_columns'];
 
+    if ($this->type !== self::DELIVERY_NOTE) {
     $elements[] = ['element' => 'tr', 'elements' => [
-        ['element' => 'span','content' => strtr(str_replace("labels", "", $_variables['values']['$entity.terms']), $_variables['labels']),'properties' => ['data-ref' => 'total_table-terms', 'style' => 'text-align: left;']]
+        ['element' => 'span','content' => strtr(str_replace("labels", "", $_variables['values']['$entity.terms']), $_variables['labels']),'properties' => ['data-ref' => 'total_table-terms', 'style' => 'text-align: left; font-weight: bold;']]
     ]];
+    }
     if ($this->type == self::DELIVERY_NOTE) {
             $elements[] = ['element' => 'div', 'elements' => [
-                ['element' => 'p', 'content' => 'En votre aimable réception <span style="padding-left:310px"> Cachet et signature à la réception</span>','properties' => ['style'=> '']],
+                ['element' => 'p', 'content' => 'En votre aimable réception <span style="padding-left:310px"> Cachet et signature à la réception</span>','properties' => ['style'=> 'font-weight: bold;']],
             ]];
     }
         return $elements;
